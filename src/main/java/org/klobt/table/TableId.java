@@ -7,10 +7,6 @@ public class TableId {
         this.id = id;
     }
 
-    public int getId() {
-        return id;
-    }
-
     @Override
     public int hashCode() {
         return id;

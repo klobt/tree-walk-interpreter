@@ -1,7 +1,5 @@
 package org.klobt.value;
 
-import java.util.Objects;
-
 public class NumberValue extends Value {
     private final double value;
 

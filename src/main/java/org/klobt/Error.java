@@ -13,7 +13,7 @@ public class Error extends RuntimeException {
         // Determine the line and column of the error
         int lineNumber = 1;  // Line numbers start at 1
         int lineStart = 0;   // Start index of the current line
-        int columnStart = 0; // Column number (0-based, adjusted later)
+        int columnStart; // Column number (0-based, adjusted later)
 
         for (int i = 0; i < start; i++) {
             if (input.charAt(i) == '\n') {
@@ -32,13 +32,8 @@ public class Error extends RuntimeException {
         String line = input.substring(lineStart, lineEnd);
 
         // Build the underline
-        StringBuilder underline = new StringBuilder();
-        for (int i = 0; i < columnStart; i++) {
-            underline.append(' '); // Spaces up to the start of the error
-        }
-        for (int i = start; i < Math.min(end, lineStart + line.length()); i++) {
-            underline.append('^'); // Carets for the error region
-        }
+        String underline = " ".repeat(columnStart)
+                + "^".repeat(Math.max(0, Math.min(end, lineStart + line.length()) - start));
 
         // Format the error message
         return String.format(

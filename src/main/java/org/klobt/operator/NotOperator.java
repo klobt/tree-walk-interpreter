@@ -4,7 +4,6 @@ import org.klobt.Context;
 import org.klobt.Error;
 import org.klobt.token.Token;
 import org.klobt.value.BooleanValue;
-import org.klobt.value.NumberValue;
 import org.klobt.value.Value;
 
 public class NotOperator implements UnaryOperator {

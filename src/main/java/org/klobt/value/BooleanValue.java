@@ -1,7 +1,5 @@
 package org.klobt.value;
 
-import java.util.Objects;
-
 public class BooleanValue extends Value {
     private final boolean value;
 

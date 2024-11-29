@@ -2,7 +2,6 @@ package org.klobt.operator;
 
 import org.klobt.Context;
 import org.klobt.Error;
-import org.klobt.table.Table;
 import org.klobt.token.Token;
 import org.klobt.value.*;
 

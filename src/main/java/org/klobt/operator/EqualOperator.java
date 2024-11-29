@@ -3,8 +3,6 @@ package org.klobt.operator;
 import org.klobt.Context;
 import org.klobt.token.Token;
 import org.klobt.value.BooleanValue;
-import org.klobt.value.NumberValue;
-import org.klobt.value.StringValue;
 import org.klobt.value.Value;
 
 public class EqualOperator implements BinaryOperator {
