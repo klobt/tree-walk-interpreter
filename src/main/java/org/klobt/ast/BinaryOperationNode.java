@@ -8,7 +8,8 @@ public class BinaryOperationNode extends Node {
     private final Node leftNode, rightNode;
     private final BinaryOperator operator;
 
-    public BinaryOperationNode(Node leftNode, Node rightNode, BinaryOperator operator) {
+    public BinaryOperationNode(int start, int end, Node leftNode, Node rightNode, BinaryOperator operator) {
+        super(start, end);
         this.leftNode = leftNode;
         this.rightNode = rightNode;
         this.operator = operator;

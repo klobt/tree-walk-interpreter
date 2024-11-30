@@ -8,7 +8,8 @@ public class UnaryOperationNode extends Node {
     private final Node node;
     private final UnaryOperator operator;
 
-    public UnaryOperationNode(Node node, UnaryOperator operator) {
+    public UnaryOperationNode(int start, int end, Node node, UnaryOperator operator) {
+        super(start, end);
         this.node = node;
         this.operator = operator;
     }

@@ -27,28 +27,25 @@ public class ParserTest {
 
         Parser parser = new Parser(input, tokens);
 
-        assertEquals(new LiteralNode(new BooleanValue(true)), parser.expression());
-        assertEquals(new LiteralNode(new NumberValue(3.14)), parser.expression());
-        assertEquals(new LiteralNode(new StringValue("test")), parser.expression());
+        assertEquals(new LiteralNode(0, 4, new BooleanValue(true)), parser.expression());
+        assertEquals(new LiteralNode(5, 9, new NumberValue(3.14)), parser.expression());
+        assertEquals(new LiteralNode(10, 16, new StringValue("test")), parser.expression());
     }
 
     @Test
     public void testParseUnary() {
-        String input = "-#'test'";
+        String input = "-'test'";
 
         List<Token> tokens = new ArrayList<>();
         tokens.add(new OperatorToken(0, 1, new MinusOperator()));
-        tokens.add(new OperatorToken(1, 2, new LengthOperator()));
-        tokens.add(new StringToken(2, 8, "test"));
+        tokens.add(new StringToken(1, 7, "test"));
 
         Parser parser = new Parser(input, tokens);
 
         assertEquals(
                 new UnaryOperationNode(
-                        new UnaryOperationNode(
-                                new LiteralNode(new StringValue("test")),
-                                new LengthOperator()
-                        ),
+                        0, 7,
+                        new LiteralNode(1, 7, new StringValue("test")),
                         new MinusOperator()
                 ),
                 parser.expression()
@@ -77,21 +74,27 @@ public class ParserTest {
 
         assertEquals(
                 new BinaryOperationNode(
+                        0, 18,
                         new BinaryOperationNode(
-                                new LiteralNode(new NumberValue(2)),
-                                new LiteralNode(new NumberValue(2)),
+                                0, 5,
+                                new LiteralNode(0, 1, new NumberValue(2)),
+                                new LiteralNode(4, 5, new NumberValue(2)),
                                 new MinusOperator()
                         ),
                         new BinaryOperationNode(
+                                8, 18,
                                 new UnaryOperationNode(
-                                        new LiteralNode(new NumberValue(3)),
+                                        8, 10,
+                                        new LiteralNode(9, 10, new NumberValue(3)),
                                         new MinusOperator()
                                 ),
                                 new BinaryOperationNode(
-                                        new LiteralNode(new NumberValue(4)),
+                                        13, 18,
+                                        new LiteralNode(13, 14, new NumberValue(4)),
                                         new BinaryOperationNode(
-                                                new LiteralNode(new NumberValue(7)),
-                                                new LiteralNode(new NumberValue(2)),
+                                                15, 18,
+                                                new LiteralNode(15, 16, new NumberValue(7)),
+                                                new LiteralNode(17, 18, new NumberValue(2)),
                                                 new PowerOperator()
                                         ),
                                         new PowerOperator()

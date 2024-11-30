@@ -1,13 +1,13 @@
 package org.klobt.operator;
 
 import org.klobt.Context;
-import org.klobt.token.Token;
+import org.klobt.ast.Node;
 import org.klobt.value.BooleanValue;
 import org.klobt.value.Value;
 
 public class EqualOperator implements BinaryOperator {
     @Override
-    public Value binaryOperation(Context context, Token token, Value left, Value right) {
+    public Value binaryOperation(Context context, Node node, Value left, Value right) {
         return new BooleanValue(left.equals(right));
     }
 

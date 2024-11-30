@@ -7,7 +7,8 @@ import java.util.Objects;
 public class LiteralNode extends Node {
     private final Value value;
 
-    public LiteralNode(Value value) {
+    public LiteralNode(int start, int end, Value value) {
+        super(start, end);
         this.value = value;
     }
 

@@ -92,39 +92,26 @@ public class Parser {
 
     private Node literal() {
         if (current() instanceof BooleanToken token) {
+            int start = current().getStart();
+            int end = current().getEnd();
+
             advance();
 
-            return new LiteralNode(new BooleanValue(token.getValue()));
+            return new LiteralNode(start, end, new BooleanValue(token.getValue()));
         } else if (current() instanceof NumberToken token) {
+            int start = current().getStart();
+            int end = current().getEnd();
+
             advance();
 
-            return new LiteralNode(new NumberValue(token.getValue()));
+            return new LiteralNode(start, end, new NumberValue(token.getValue()));
         } else if (current() instanceof StringToken token) {
+            int start = current().getStart();
+            int end = current().getEnd();
+
             advance();
 
-            return new LiteralNode(new StringValue(token.getValue()));
-            /*
-        } else if (current() instanceof LBraceToken) {
-            List<Node> elements = new ArrayList<>();
-            Node element;
-
-            while (true) {
-                if ((element = expression()) == null) {
-                    break;
-                }
-                elements.add(element);
-
-                advance();
-
-                expect(CommaToken.class, RBraceToken.class);
-
-                if (current() instanceof RBraceToken) {
-                    break;
-                }
-            }
-
-            expect(RBraceToken.class);
-            */
+            return new LiteralNode(start, end, new StringValue(token.getValue()));
         }
 
         return null;
@@ -134,13 +121,15 @@ public class Parser {
         Node node;
 
         if (current() instanceof OperatorToken token && token.getValue() instanceof UnaryOperator operator) {
+            int start = current().getStart();
+
             advance();
             expectMoreTokens();
 
             if ((node = unary()) != null) {
-                return new UnaryOperationNode(node, operator);
+                return new UnaryOperationNode(start, node.getEnd(), node, operator);
             } else if ((node = literal()) != null) {
-                return new UnaryOperationNode(node, operator);
+                return new UnaryOperationNode(start, node.getEnd(), node, operator);
             } else {
                 error("Expected unary operator or literal");
             }
@@ -163,7 +152,7 @@ public class Parser {
 
                 Node right = precedence.isLeftAssociative() ? (precedence.isLast() ? unary() : binary(precedence.next())) : binary(precedence);
 
-                left = new BinaryOperationNode(left, right, operator);
+                left = new BinaryOperationNode(left.getStart(), right.getEnd(), left, right, operator);
             } else {
                 break;
             }
