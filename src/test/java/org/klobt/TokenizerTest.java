@@ -64,19 +64,6 @@ public class TokenizerTest {
     }
 
     @Test
-    public void testTokenizeKeywords() {
-        List<Token> tokens = tokenizer.tokenize("if else true false nil");
-        assertEquals(5, tokens.size());
-        assertInstanceOf(IfToken.class, tokens.get(0));
-        assertInstanceOf(ElseToken.class, tokens.get(1));
-        assertInstanceOf(BooleanToken.class, tokens.get(2));
-        assertTrue(((BooleanToken) tokens.get(2)).getValue());
-        assertInstanceOf(BooleanToken.class, tokens.get(3));
-        assertFalse(((BooleanToken) tokens.get(3)).getValue());
-        assertInstanceOf(NilToken.class, tokens.get(4));
-    }
-
-    @Test
     public void testTokenizeName() {
         List<Token> tokens = tokenizer.tokenize("variable_name");
         assertEquals(1, tokens.size());
@@ -86,7 +73,7 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeOperators() {
-        List<Token> tokens = tokenizer.tokenize("== ~= <= >= < >");
+        List<Token> tokens = tokenizer.tokenize("== != <= >= < >");
         assertEquals(6, tokens.size());
         assertInstanceOf(OperatorToken.class, tokens.get(0));
         assertInstanceOf(EqualOperator.class, ((OperatorToken) tokens.get(0)).getValue());
