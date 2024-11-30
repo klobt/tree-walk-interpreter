@@ -226,11 +226,40 @@ public class Parser {
         Node node;
 
         if ((node = assignment()) != null) {
+            expect(SemicolonToken.class);
+            advance();
+
             return node;
         } else if ((node = expression()) != null) {
+            expect(SemicolonToken.class);
+            advance();
+
+            return node;
+        } else if (current() instanceof LBraceToken) {
+            advance();
+
+            node = block();
+            if (node == null) {
+                error("Expected block");
+            }
+
+            expect(RBraceToken.class);
+            advance();
+
             return node;
         } else {
             return null;
         }
+    }
+
+    public Node block() {
+        List<Node> nodes = new ArrayList<>();
+        Node node;
+
+        while (!isEOF() && (node = statement()) != null) {
+            nodes.add(node);
+        }
+
+        return new BlockNode(nodes.getFirst().getStart(), nodes.getLast().getEnd(), nodes);
     }
 }

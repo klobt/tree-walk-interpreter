@@ -1,10 +1,7 @@
 package org.klobt;
 
 import org.junit.jupiter.api.Test;
-import org.klobt.ast.AssignmentNode;
-import org.klobt.ast.BinaryOperationNode;
-import org.klobt.ast.LiteralNode;
-import org.klobt.ast.UnaryOperationNode;
+import org.klobt.ast.*;
 import org.klobt.operator.*;
 import org.klobt.token.*;
 import org.klobt.value.BooleanValue;
@@ -141,7 +138,7 @@ public class ParserTest {
 
     @Test
     public void testAssignment() {
-        String input = "x = 2 + 2";
+        String input = "x = 2 + 2;";
 
         List<Token> tokens = new ArrayList<>();
         tokens.add(new NameToken(0, 1, "x"));
@@ -149,6 +146,7 @@ public class ParserTest {
         tokens.add(new NumberToken(4, 5, 2));
         tokens.add(new OperatorToken(6, 7, new AddOperator()));
         tokens.add(new NumberToken(8, 9, 2));
+        tokens.add(new SemicolonToken(9, 10));
 
         Parser parser = new Parser(input, tokens);
 
@@ -162,6 +160,37 @@ public class ParserTest {
                                 new LiteralNode(5, 6, new NumberValue(2)),
                                 new AddOperator()
                         )
+                ),
+                parser.statement()
+        );
+    }
+
+    @Test
+    public void testBlock() {
+        String input = "{1;2;3;}";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new LBraceToken(0, 1));
+        tokens.add(new NumberToken(1, 2, 1));
+        tokens.add(new SemicolonToken(2, 3));
+        tokens.add(new NumberToken(3, 4, 2));
+        tokens.add(new SemicolonToken(4, 5));
+        tokens.add(new NumberToken(5, 6, 3));
+        tokens.add(new SemicolonToken(6, 7));
+        tokens.add(new RBraceToken(7, 8));
+
+        Parser parser = new Parser(input, tokens);
+
+        List<Node> nodes = new ArrayList<>();
+
+        nodes.add(new LiteralNode(1, 2, new NumberValue(1)));
+        nodes.add(new LiteralNode(3, 4, new NumberValue(2)));
+        nodes.add(new LiteralNode(5, 6, new NumberValue(3)));
+
+        assertEquals(
+                new BlockNode(
+                        0, 8,
+                        nodes
                 ),
                 parser.statement()
         );
