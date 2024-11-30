@@ -14,11 +14,13 @@ public class Parser {
     private final String input;
     private final List<Token> tokens;
     private int currentTokenIndex;
+    private int savedIndex;
 
     public Parser(String input, List<Token> tokens) {
         this.input = input;
         this.tokens = tokens;
         currentTokenIndex = 0;
+        savedIndex = 0;
     }
 
     private Token current() {
@@ -35,6 +37,14 @@ public class Parser {
 
     private void advance() {
         currentTokenIndex++;
+    }
+
+    private void save() {
+        savedIndex = currentTokenIndex;
+    }
+
+    private void load() {
+        currentTokenIndex = savedIndex;
     }
 
     private boolean isEOF() {
@@ -112,6 +122,35 @@ public class Parser {
             advance();
 
             return new LiteralNode(start, end, new StringValue(token.getValue()));
+        } else if (current() instanceof NameToken token) {
+            int start = current().getStart();
+            int end = current().getEnd();
+
+            advance();
+
+            return new VariableNode(start, end, token.getValue());
+        }
+
+        return null;
+    }
+
+    private Node atom() {
+        Node node;
+
+        if ((node = literal()) != null) {
+            return node;
+        } else if (current() instanceof LParenToken) {
+            advance();
+
+            node = expression();
+            if (node == null) {
+                error("Expected expression");
+            }
+
+            expect(RParenToken.class);
+            advance();
+
+            return node;
         }
 
         return null;
@@ -128,11 +167,11 @@ public class Parser {
 
             if ((node = unary()) != null) {
                 return new UnaryOperationNode(start, node.getEnd(), node, operator);
-            } else if ((node = literal()) != null) {
-                return new UnaryOperationNode(start, node.getEnd(), node, operator);
             } else {
                 error("Expected unary operator or literal");
             }
+        } else if ((node = atom()) != null) {
+            return node;
         }
 
         return literal();
@@ -159,5 +198,39 @@ public class Parser {
         }
 
         return left;
+    }
+
+    private Node assignment() {
+        save();
+
+        if (current() instanceof NameToken token) {
+            advance();
+
+            if (current() instanceof AssignToken) {
+                advance();
+
+                Node node = expression();
+
+                if (node != null) {
+                    return new AssignmentNode(token.getStart(), node.getEnd(), token.getValue(), node);
+                }
+            }
+        }
+
+        load();
+
+        return null;
+    }
+
+    public Node statement() {
+        Node node;
+
+        if ((node = assignment()) != null) {
+            return node;
+        } else if ((node = expression()) != null) {
+            return node;
+        } else {
+            return null;
+        }
     }
 }

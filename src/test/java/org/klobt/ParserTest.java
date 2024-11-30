@@ -1,6 +1,7 @@
 package org.klobt;
 
 import org.junit.jupiter.api.Test;
+import org.klobt.ast.AssignmentNode;
 import org.klobt.ast.BinaryOperationNode;
 import org.klobt.ast.LiteralNode;
 import org.klobt.ast.UnaryOperationNode;
@@ -104,6 +105,65 @@ public class ParserTest {
                         new MinusOperator()
                 ),
                 parser.expression()
+        );
+    }
+
+    @Test
+    public void testParseBinaryWithParentheses() {
+        String input = "(2 + 2) * 3";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new LParenToken(0, 1));
+        tokens.add(new NumberToken(1, 2, 2));
+        tokens.add(new OperatorToken(3, 4, new AddOperator()));
+        tokens.add(new NumberToken(5, 6, 2));
+        tokens.add(new RParenToken(6, 7));
+        tokens.add(new OperatorToken(8, 9, new MultiplyOperator()));
+        tokens.add(new NumberToken(10, 11, 3));
+
+        Parser parser = new Parser(input, tokens);
+
+        assertEquals(
+                new BinaryOperationNode(
+                        0, 11,
+                        new BinaryOperationNode(
+                                1, 6,
+                                new LiteralNode(1, 2, new NumberValue(2)),
+                                new LiteralNode(5, 6, new NumberValue(2)),
+                                new AddOperator()
+                        ),
+                        new LiteralNode(10, 11, new NumberValue(3)),
+                        new MultiplyOperator()
+                ),
+                parser.expression()
+        );
+    }
+
+    @Test
+    public void testAssignment() {
+        String input = "x = 2 + 2";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new NameToken(0, 1, "x"));
+        tokens.add(new AssignToken(2, 3));
+        tokens.add(new NumberToken(4, 5, 2));
+        tokens.add(new OperatorToken(6, 7, new AddOperator()));
+        tokens.add(new NumberToken(8, 9, 2));
+
+        Parser parser = new Parser(input, tokens);
+
+        assertEquals(
+                new AssignmentNode(
+                        0, 9,
+                        "x",
+                        new BinaryOperationNode(
+                                1, 6,
+                                new LiteralNode(1, 2, new NumberValue(2)),
+                                new LiteralNode(5, 6, new NumberValue(2)),
+                                new AddOperator()
+                        )
+                ),
+                parser.statement()
         );
     }
 }
