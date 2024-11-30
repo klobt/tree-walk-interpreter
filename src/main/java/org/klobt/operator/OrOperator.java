@@ -20,7 +20,17 @@ public class OrOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.OR;
+    }
+
+    @Override
     public String toString() {
         return "Or";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

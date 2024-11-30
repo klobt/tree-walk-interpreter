@@ -2,9 +2,12 @@ package org.klobt.operator;
 
 import org.klobt.Context;
 import org.klobt.Error;
+import org.klobt.ast.LiteralNode;
 import org.klobt.token.Token;
 import org.klobt.value.NumberValue;
 import org.klobt.value.Value;
+
+import java.util.Objects;
 
 public class AddOperator implements BinaryOperator {
     @Override
@@ -20,7 +23,17 @@ public class AddOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.ADD_SUBTRACT;
+    }
+
+    @Override
     public String toString() {
         return "Add";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

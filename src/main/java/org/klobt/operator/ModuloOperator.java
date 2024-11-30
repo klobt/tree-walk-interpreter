@@ -20,7 +20,17 @@ public class ModuloOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.MODULO;
+    }
+
+    @Override
     public String toString() {
         return "Modulo";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

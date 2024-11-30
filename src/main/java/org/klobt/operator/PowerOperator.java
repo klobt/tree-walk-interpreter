@@ -20,7 +20,17 @@ public class PowerOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.POWER;
+    }
+
+    @Override
     public String toString() {
         return "Power";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

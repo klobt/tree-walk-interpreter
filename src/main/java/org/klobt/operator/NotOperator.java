@@ -22,4 +22,9 @@ public class NotOperator implements UnaryOperator {
     public String toString() {
         return "Not";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
+    }
 }

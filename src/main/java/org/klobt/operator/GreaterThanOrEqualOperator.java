@@ -21,7 +21,17 @@ public class GreaterThanOrEqualOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.COMPARISON;
+    }
+
+    @Override
     public String toString() {
         return "GreaterThanOrEqual";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

@@ -99,7 +99,10 @@ public class Tokenizer {
             } else if (input.charAt(i) == ' ' || input.charAt(i) == '\t') {
                 i++;
             } else if (input.charAt(i) == '\n') {
-                tokens.add(new NewlineToken(i, i + 1));
+                if (!tokens.isEmpty()) {
+                    tokens.getFirst().setBeforeNewline(true);
+                }
+
                 i++;
             } else if (isDigit(input.charAt(i))) {
                 int start = i;

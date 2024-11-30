@@ -20,7 +20,17 @@ public class AndOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.AND;
+    }
+
+    @Override
     public String toString() {
         return "And";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

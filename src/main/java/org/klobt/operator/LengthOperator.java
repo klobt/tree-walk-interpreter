@@ -21,4 +21,9 @@ public class LengthOperator implements UnaryOperator {
     public String toString() {
         return "Length";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
+    }
 }

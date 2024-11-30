@@ -21,7 +21,17 @@ public class LessThanOrEqualOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.COMPARISON;
+    }
+
+    @Override
     public String toString() {
         return "LessThanOrEqual";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

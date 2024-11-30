@@ -20,7 +20,17 @@ public class ConcatenateOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.CONCATENATE;
+    }
+
+    @Override
     public String toString() {
         return "Concatenate";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

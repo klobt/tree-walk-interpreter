@@ -20,7 +20,17 @@ public class MultiplyOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.MULTIPLY_DIVIDE;
+    }
+
+    @Override
     public String toString() {
         return "Multiply";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }

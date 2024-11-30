@@ -20,7 +20,17 @@ public class DivideOperator implements BinaryOperator {
     }
 
     @Override
+    public Precedence precedence() {
+        return Precedence.MULTIPLY_DIVIDE;
+    }
+
+    @Override
     public String toString() {
         return "Divide";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return !(o == null || getClass() != o.getClass());
     }
 }
