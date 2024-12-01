@@ -27,8 +27,8 @@ public class Tokenizer {
         return isStartOfName(ch) || isDigit(ch);
     }
 
-    private boolean isSpecial(char ch) {
-        return ch >= '!' && ch <= '~' && !isName(ch);
+    private boolean isOperator(char ch) {
+        return "=!%^&*-+<>/".indexOf(ch) >= 0;
     }
 
     public List<Token> tokenize(String input) {
@@ -36,23 +36,19 @@ public class Tokenizer {
         int i = 0;
 
         while (i < input.length()) {
-            if (i + 1 < input.length() && input.charAt(i) == '-' && input.charAt(i + 1) == '-') {
+            if (i + 1 < input.length() && input.charAt(i) == '/' && input.charAt(i + 1) == '/') {
+                while (i < input.length() && input.charAt(i) != '\n') {
+                    i++;
+                }
+            } else if (i + 1 < input.length() && input.charAt(i) == '/' && input.charAt(i + 1) == '*') {
                 i += 2;
 
-                if (i + 1 < input.length() && input.charAt(i) == '[' && input.charAt(i + 1) == '[') {
+                while (i < input.length() && !(i + 1 < input.length() && input.charAt(i) == '*' && input.charAt(i + 1) == '/')) {
+                    i++;
+                }
+
+                if (i < input.length()) {
                     i += 2;
-
-                    while (i < input.length() && !(i + 1 < input.length() && input.charAt(i) == ']' && input.charAt(i + 1) == ']')) {
-                        i++;
-                    }
-
-                    if (i < input.length()) {
-                        i += 2;
-                    }
-                } else {
-                    while (i < input.length() && input.charAt(i) != '\n') {
-                        i++;
-                    }
                 }
             } else if (input.charAt(i) == '"' || input.charAt(i) == '\'') {
                 char quoteType = input.charAt(i);
@@ -207,10 +203,40 @@ public class Tokenizer {
                     default:
                         tokens.add(new NameToken(start, i, value));
                 }
-            } else if (isSpecial(input.charAt(i))) {
+            } else if (input.charAt(i) == ',') {
+                tokens.add(new CommaToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == '.') {
+                tokens.add(new PeriodToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == ';') {
+                tokens.add(new SemicolonToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == ':') {
+                tokens.add(new ColonToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == '(') {
+                tokens.add(new LParenToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == ')') {
+                tokens.add(new RParenToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == '{') {
+                tokens.add(new LBraceToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == '}') {
+                tokens.add(new RBraceToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == '[') {
+                tokens.add(new LBracketToken(i, i + 1));
+                i++;
+            } else if (input.charAt(i) == ']') {
+                tokens.add(new RBracketToken(i, i + 1));
+                i++;
+            } else if (isOperator(input.charAt(i))) {
                 int start = i;
 
-                while (i < input.length() && isSpecial(input.charAt(i))) {
+                while (i < input.length() && isOperator(input.charAt(i))) {
                     i++;
                 }
 
@@ -267,36 +293,6 @@ public class Tokenizer {
                         break;
                     case "=":
                         tokens.add(new AssignToken(start, i));
-                        break;
-                    case ",":
-                        tokens.add(new CommaToken(start, i));
-                        break;
-                    case ".":
-                        tokens.add(new PeriodToken(start, i));
-                        break;
-                    case ";":
-                        tokens.add(new SemicolonToken(start, i));
-                        break;
-                    case ":":
-                        tokens.add(new ColonToken(start, i));
-                        break;
-                    case "(":
-                        tokens.add(new LParenToken(start, i));
-                        break;
-                    case ")":
-                        tokens.add(new RParenToken(start, i));
-                        break;
-                    case "{":
-                        tokens.add(new LBraceToken(start, i));
-                        break;
-                    case "}":
-                        tokens.add(new RBraceToken(start, i));
-                        break;
-                    case "[":
-                        tokens.add(new LBracketToken(start, i));
-                        break;
-                    case "]":
-                        tokens.add(new RBracketToken(start, i));
                         break;
                     default:
                         throw new Error(input, start, i, "Unknown operator: " + operator);

@@ -49,15 +49,15 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeComments() {
-        List<Token> tokens = tokenizer.tokenize("-- Single line comment\n123");
-        assertEquals(2, tokens.size());
-        assertInstanceOf(NumberToken.class, tokens.get(1));
-        assertEquals(123.0, ((NumberToken) tokens.get(1)).getValue());
+        List<Token> tokens = tokenizer.tokenize("// Single line comment\n123");
+        assertEquals(1, tokens.size());
+        assertInstanceOf(NumberToken.class, tokens.getFirst());
+        assertEquals(123.0, ((NumberToken) tokens.getFirst()).getValue());
     }
 
     @Test
     public void testTokenizeLongComments() {
-        List<Token> tokens = tokenizer.tokenize("--[[ Multi-line\ncomment ]]123");
+        List<Token> tokens = tokenizer.tokenize("/* Multi-line\ncomment */123");
         assertEquals(1, tokens.size());
         assertInstanceOf(NumberToken.class, tokens.getFirst());
         assertEquals(123.0, ((NumberToken) tokens.getFirst()).getValue());
@@ -93,6 +93,24 @@ public class TokenizerTest {
     }
 
     @Test
+    public void testTokenizeMixtureOfOperators() {
+        List<Token> tokens = tokenizer.tokenize("+{}()[]:;.,+");
+        assertEquals(12, tokens.size());
+        assertInstanceOf(OperatorToken.class, tokens.get(0));
+        assertInstanceOf(LBraceToken.class, tokens.get(1));
+        assertInstanceOf(RBraceToken.class, tokens.get(2));
+        assertInstanceOf(LParenToken.class, tokens.get(3));
+        assertInstanceOf(RParenToken.class, tokens.get(4));
+        assertInstanceOf(LBracketToken.class, tokens.get(5));
+        assertInstanceOf(RBracketToken.class, tokens.get(6));
+        assertInstanceOf(ColonToken.class, tokens.get(7));
+        assertInstanceOf(SemicolonToken.class, tokens.get(8));
+        assertInstanceOf(PeriodToken.class, tokens.get(9));
+        assertInstanceOf(CommaToken.class, tokens.get(10));
+        assertInstanceOf(OperatorToken.class, tokens.get(11));
+    }
+
+    @Test
     public void testTokenizeErrorUnterminatedString() {
         Error error = assertThrows(Error.class, () -> tokenizer.tokenize("\"unterminated string"));
         assertTrue(error.getMessage().contains("Unterminated string literal"));
@@ -100,8 +118,8 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeErrorUnknownCharacter() {
-        Error error = assertThrows(Error.class, () -> tokenizer.tokenize("unknown@character"));
-        assertTrue(error.getMessage().contains("Unknown operator: @"));
+        Error error = assertThrows(Error.class, () -> tokenizer.tokenize("unknown++character"));
+        assertTrue(error.getMessage().contains("Unknown operator: ++"));
     }
 
     @Test
