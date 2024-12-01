@@ -101,11 +101,11 @@ public class Parser {
         }
     }
 
-    public Node expression() {
+    public PureNode expression() {
         return binary(Precedence.START);
     }
 
-    private Node literal() {
+    private PureNode literal() {
         if (current() instanceof BooleanToken token) {
             int start = current().getStart();
             int end = current().getEnd();
@@ -146,8 +146,8 @@ public class Parser {
         return null;
     }
 
-    private Node atom() {
-        Node node;
+    private PureNode atom() {
+        PureNode node;
 
         if ((node = literal()) != null) {
             return node;
@@ -175,10 +175,10 @@ public class Parser {
         return null;
     }
 
-    private ArgumentList<Node> argumentList() {
-        List<Node> positionalArguments = new ArrayList<>();
-        HashMap<String, Node> keywordArguments = new HashMap<>();
-        Node argument;
+    private ArgumentList<PureNode> argumentList() {
+        List<PureNode> positionalArguments = new ArrayList<>();
+        HashMap<String, PureNode> keywordArguments = new HashMap<>();
+        PureNode argument;
 
         while (!isEOF() && !(current() instanceof NameToken && canPeek() && peek() instanceof AssignToken) && (argument = expression()) != null) {
             positionalArguments.add(argument);
@@ -203,9 +203,9 @@ public class Parser {
         return new ArgumentList<>(positionalArguments, keywordArguments);
     }
 
-    private Node postfix() {
+    private PureNode postfix() {
         int start, end;
-        Node node = atom();
+        PureNode node = atom();
         if (node == null) {
             return null;
         }
@@ -216,7 +216,7 @@ public class Parser {
             if (current() instanceof LParenToken) {
                 advance();
 
-                ArgumentList<Node> arguments = argumentList();
+                ArgumentList<PureNode> arguments = argumentList();
 
                 expect(RParenToken.class);
                 end = current().getEnd();
@@ -226,7 +226,7 @@ public class Parser {
             } else if (current() instanceof LBracketToken) {
                 advance();
 
-                Node index = expression();
+                PureNode index = expression();
                 if (index == null) {
                     error("Expected expression");
                 }
@@ -244,8 +244,8 @@ public class Parser {
         return node;
     }
 
-    private Node unary() {
-        Node node;
+    private PureNode unary() {
+        PureNode node;
 
         if (current() instanceof OperatorToken token && token.getValue() instanceof UnaryOperator operator) {
             int start = current().getStart();
@@ -265,8 +265,8 @@ public class Parser {
         return literal();
     }
 
-    private Node binary(Precedence precedence) {
-        Node left = precedence.isLast() ? unary() : binary(precedence.next());
+    private PureNode binary(Precedence precedence) {
+        PureNode left = precedence.isLast() ? unary() : binary(precedence.next());
 
         if (left == null) {
             return null;
@@ -277,7 +277,7 @@ public class Parser {
                 advance();
                 expectMoreTokens();
 
-                Node right = precedence.isLeftAssociative() ? (precedence.isLast() ? unary() : binary(precedence.next())) : binary(precedence);
+                PureNode right = precedence.isLeftAssociative() ? (precedence.isLast() ? unary() : binary(precedence.next())) : binary(precedence);
                 if (right == null) {
                     error("Unexpected token");
                 }
@@ -315,6 +315,7 @@ public class Parser {
 
     public Node statement() {
         Node node;
+        PureNode condition;
 
         if ((node = assignment()) != null) {
             expect(SemicolonToken.class);
@@ -353,8 +354,8 @@ public class Parser {
             expect(LParenToken.class);
             advance();
 
-            node = expression();
-            if (node == null) {
+            condition = expression();
+            if (condition == null) {
                 error("Expected expression");
             }
 
@@ -379,7 +380,46 @@ public class Parser {
                 end = elseStatement.getEnd();
             }
 
-            return new BranchNode(start, end, node, ifStatement, elseStatement);
+            return new BranchNode(start, end, condition, ifStatement, elseStatement);
+        } else if (current() instanceof WhileToken) {
+            Node body;
+            int start = current().getStart();
+
+            advance();
+
+            expect(LParenToken.class);
+            advance();
+
+            condition = expression();
+            if (condition == null) {
+                error("Expected expression");
+            }
+
+            expect(RParenToken.class);
+            advance();
+
+            body = statement();
+            if (body == null) {
+                error("Expected statement");
+            }
+
+            return new WhileNode(start, body.getEnd(), condition, body);
+        } else if (current() instanceof BreakToken) {
+            int start = current().getStart(), end = current().getEnd();
+
+            advance();
+            expect(SemicolonToken.class);
+            advance();
+
+            return new BreakNode(start, end);
+        } else if (current() instanceof ContinueToken) {
+            int start = current().getStart(), end = current().getEnd();
+
+            advance();
+            expect(SemicolonToken.class);
+            advance();
+
+            return new ContinueNode(start, end);
         } else {
             return null;
         }
@@ -396,7 +436,7 @@ public class Parser {
         return new BlockNode(nodes.getFirst().getStart(), nodes.getLast().getEnd(), nodes);
     }
 
-    public Node program() {
+    public PureNode program() {
         Node node = block();
 
         return new ProgramNode(node.getStart(), node.getEnd(), node);

@@ -8,11 +8,11 @@ import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class CallNode extends Node {
-    private final Node node;
-    private final ArgumentList<Node> arguments;
+public class CallNode extends PureNode {
+    private final PureNode node;
+    private final ArgumentList<PureNode> arguments;
 
-    public CallNode(int start, int end, Node node, ArgumentList<Node> arguments) {
+    public CallNode(int start, int end, PureNode node, ArgumentList<PureNode> arguments) {
         super(start, end);
         this.node = node;
         this.arguments = arguments;
@@ -37,7 +37,7 @@ public class CallNode extends Node {
     @Override
     public Value evaluate(Context context) {
         if (node.evaluate(context) instanceof Callable callable) {
-            return callable.call(context, this, arguments.map((Node node) -> node.evaluate(context)));
+            return callable.call(context, this, arguments.map((PureNode node) -> node.evaluate(context)));
         } else {
             throw new Error(context.getInput(), getStart(), getEnd(), "Expected a callable");
         }

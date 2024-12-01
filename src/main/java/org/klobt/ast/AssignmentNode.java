@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.control.BreakException;
+import org.klobt.control.ContinueException;
 import org.klobt.value.NullValue;
 import org.klobt.value.Value;
 
@@ -33,7 +35,7 @@ public class AssignmentNode extends Node {
     }
 
     @Override
-    public Value evaluate(Context context) {
+    public Value evaluate(Context context) throws BreakException, ContinueException {
         context.setVariable(name, node.evaluate(context));
 
         return new NullValue();

@@ -204,6 +204,15 @@ public class Tokenizer {
                     case "else":
                         tokens.add(new ElseToken(start, i));
                         break;
+                    case "while":
+                        tokens.add(new WhileToken(start, i));
+                        break;
+                    case "break":
+                        tokens.add(new BreakToken(start, i));
+                        break;
+                    case "continue":
+                        tokens.add(new ContinueToken(start, i));
+                        break;
                     case "print":
                         tokens.add(new BuiltinToken(start, i, new PrintBuiltin()));
                         break;

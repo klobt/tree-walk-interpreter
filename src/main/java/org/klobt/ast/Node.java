@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.control.BreakException;
+import org.klobt.control.ContinueException;
 import org.klobt.value.Value;
 
 public abstract class Node {
@@ -27,7 +29,7 @@ public abstract class Node {
         this.end = end;
     }
 
-    public abstract Value evaluate(Context context);
+    public abstract Value evaluate(Context context) throws BreakException, ContinueException;
 
     @Override
     public int hashCode() {

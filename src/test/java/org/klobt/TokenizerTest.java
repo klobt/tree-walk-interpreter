@@ -87,10 +87,13 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeKeywords() {
-        List<Token> tokens = tokenizer.tokenize("if else");
-        assertEquals(2, tokens.size());
+        List<Token> tokens = tokenizer.tokenize("if else while break continue");
+        assertEquals(5, tokens.size());
         assertInstanceOf(IfToken.class, tokens.get(0));
         assertInstanceOf(ElseToken.class, tokens.get(1));
+        assertInstanceOf(WhileToken.class, tokens.get(2));
+        assertInstanceOf(BreakToken.class, tokens.get(3));
+        assertInstanceOf(ContinueToken.class, tokens.get(4));
     }
 
     @Test

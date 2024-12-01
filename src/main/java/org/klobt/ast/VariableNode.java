@@ -5,7 +5,7 @@ import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class VariableNode extends Node {
+public class VariableNode extends PureNode {
     private final String name;
 
     public VariableNode(int start, int end, String name) {

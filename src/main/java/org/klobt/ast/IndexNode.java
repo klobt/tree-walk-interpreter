@@ -7,11 +7,11 @@ import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class IndexNode extends Node {
-    private final Node node;
-    private final Node index;
+public class IndexNode extends PureNode {
+    private final PureNode node;
+    private final PureNode index;
 
-    public IndexNode(int start, int end, Node node, Node index) {
+    public IndexNode(int start, int end, PureNode node, PureNode index) {
         super(start, end);
         this.node = node;
         this.index = index;

@@ -308,8 +308,8 @@ public class ParserTest {
 
         Parser parser = new Parser(input, tokens);
 
-        List<Node> positionalArguments = new ArrayList<>();
-        HashMap<String, Node> keywordArguments = new HashMap<>();
+        List<PureNode> positionalArguments = new ArrayList<>();
+        HashMap<String, PureNode> keywordArguments = new HashMap<>();
 
         positionalArguments.add(new LiteralNode(0, 0, new NumberValue(1)));
         positionalArguments.add(new LiteralNode(0, 0, new NumberValue(2)));

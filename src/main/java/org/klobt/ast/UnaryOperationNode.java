@@ -6,11 +6,11 @@ import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class UnaryOperationNode extends Node {
-    private final Node node;
+public class UnaryOperationNode extends PureNode {
+    private final PureNode node;
     private final UnaryOperator operator;
 
-    public UnaryOperationNode(int start, int end, Node node, UnaryOperator operator) {
+    public UnaryOperationNode(int start, int end, PureNode node, UnaryOperator operator) {
         super(start, end);
         this.node = node;
         this.operator = operator;

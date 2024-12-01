@@ -1,16 +1,18 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.control.BreakException;
+import org.klobt.control.ContinueException;
 import org.klobt.operator.BinaryOperator;
 import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class BinaryOperationNode extends Node {
-    private final Node leftNode, rightNode;
+public class BinaryOperationNode extends PureNode {
+    private final PureNode leftNode, rightNode;
     private final BinaryOperator operator;
 
-    public BinaryOperationNode(int start, int end, Node leftNode, Node rightNode, BinaryOperator operator) {
+    public BinaryOperationNode(int start, int end, PureNode leftNode, PureNode rightNode, BinaryOperator operator) {
         super(start, end);
         this.leftNode = leftNode;
         this.rightNode = rightNode;

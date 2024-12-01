@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.control.BreakException;
+import org.klobt.control.ContinueException;
 import org.klobt.value.NullValue;
 import org.klobt.value.Value;
 
@@ -58,7 +60,7 @@ public class BlockNode extends Node {
     }
 
     @Override
-    public Value evaluate(Context context) {
+    public Value evaluate(Context context) throws BreakException, ContinueException {
         for (Node node : nodes) {
             node.evaluate(context);
         }

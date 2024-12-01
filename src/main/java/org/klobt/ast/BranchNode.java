@@ -2,15 +2,19 @@ package org.klobt.ast;
 
 import org.klobt.Context;
 import org.klobt.Error;
+import org.klobt.control.BreakException;
+import org.klobt.control.ContinueException;
 import org.klobt.value.BooleanValue;
+import org.klobt.value.NullValue;
 import org.klobt.value.Value;
 
 import java.util.Objects;
 
 public class BranchNode extends Node {
-    private final Node condition, ifStatement, elseStatement;
+    private final PureNode condition;
+    private final Node ifStatement, elseStatement;
 
-    public BranchNode(int start, int end, Node condition, Node ifStatement, Node elseStatement) {
+    public BranchNode(int start, int end, PureNode condition, Node ifStatement, Node elseStatement) {
         super(start, end);
         this.condition = condition;
         this.ifStatement = ifStatement;
@@ -34,16 +38,18 @@ public class BranchNode extends Node {
     }
 
     @Override
-    public Value evaluate(Context context) {
+    public Value evaluate(Context context) throws BreakException, ContinueException {
         if (condition.evaluate(context) instanceof BooleanValue conditionValue) {
             if (conditionValue.getValue()) {
                 return ifStatement.evaluate(context);
-            } else {
+            } else if (elseStatement != null) {
                 return elseStatement.evaluate(context);
             }
         } else {
             throw new Error(context.getInput(), getStart(), getEnd(), "Expected a boolean value inside the condition");
         }
+
+        return new NullValue();
     }
 
     @Override

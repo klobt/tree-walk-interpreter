@@ -1,21 +1,19 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.control.BreakException;
 import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class LiteralNode extends PureNode {
-    private final Value value;
-
-    public LiteralNode(int start, int end, Value value) {
+public class BreakNode extends Node {
+    public BreakNode(int start, int end) {
         super(start, end);
-        this.value = value;
     }
 
     @Override
     public String toString() {
-        return "Literal(" + value + ")";
+        return "Break";
     }
 
     @Override
@@ -24,13 +22,11 @@ public class LiteralNode extends PureNode {
             return false;
         }
 
-        LiteralNode that = (LiteralNode) o;
-
-        return Objects.equals(value, that.value);
+        return true;
     }
 
     @Override
-    public Value evaluate(Context context) {
-        return value;
+    public Value evaluate(Context context) throws BreakException {
+        throw new BreakException();
     }
 }
