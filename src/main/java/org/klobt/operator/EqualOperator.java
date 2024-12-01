@@ -7,7 +7,7 @@ import org.klobt.value.Value;
 
 public class EqualOperator implements BinaryOperator {
     @Override
-    public Value binaryOperation(Context context, Node node, Value left, Value right) {
+    public Value evaluate(Context context, Node node, Value left, Value right) {
         return new BooleanValue(left.equals(right));
     }
 

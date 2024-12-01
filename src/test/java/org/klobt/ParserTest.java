@@ -10,6 +10,7 @@ import org.klobt.value.StringValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -249,6 +250,81 @@ public class ParserTest {
                         )
                 ),
                 parser.block()
+        );
+    }
+
+    @Test
+    public void testPostfix() {
+        String input = "-func(1)[2]";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new OperatorToken(0, 1, new MinusOperator()));
+        tokens.add(new NameToken(1, 5, "func"));
+        tokens.add(new LParenToken(5, 6));
+        tokens.add(new NumberToken(6, 7, 1));
+        tokens.add(new RParenToken(7, 8));
+        tokens.add(new LBracketToken(8, 9));
+        tokens.add(new NumberToken(9, 10, 2));
+        tokens.add(new RBracketToken(10, 11));
+
+        Parser parser = new Parser(input, tokens);
+
+        assertEquals(
+                new UnaryOperationNode(
+                        0, 0,
+                        new IndexNode(
+                                0, 0,
+                                new CallNode(
+                                        0, 0,
+                                        new VariableNode(0, 0, "func"),
+                                        new ArgumentList<>(
+                                                Collections.singletonList(new LiteralNode(0, 0, new NumberValue(1))),
+                                                new HashMap<>()
+                                        )
+                                ),
+                                new LiteralNode(0, 0, new NumberValue(2))
+                        ),
+                        new MinusOperator()
+                ),
+                parser.expression()
+        );
+    }
+
+    @Test
+    public void testCallArguments() {
+        String input = "func(1,2,three=3)";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new NameToken(0, 4, "func"));
+        tokens.add(new LParenToken(4, 5));
+        tokens.add(new NumberToken(5, 6, 1));
+        tokens.add(new CommaToken(6, 7));
+        tokens.add(new NumberToken(7, 8, 2));
+        tokens.add(new CommaToken(8, 9));
+        tokens.add(new NameToken(9, 14, "three"));
+        tokens.add(new AssignToken(14, 15));
+        tokens.add(new NumberToken(15, 16, 3));
+        tokens.add(new RParenToken(16, 17));
+
+        Parser parser = new Parser(input, tokens);
+
+        List<Node> positionalArguments = new ArrayList<>();
+        HashMap<String, Node> keywordArguments = new HashMap<>();
+
+        positionalArguments.add(new LiteralNode(0, 0, new NumberValue(1)));
+        positionalArguments.add(new LiteralNode(0, 0, new NumberValue(2)));
+        keywordArguments.put("three", new LiteralNode(0, 0, new NumberValue(3)));
+
+        assertEquals(
+                new CallNode(
+                        0, 0,
+                        new VariableNode(0, 0, "func"),
+                        new ArgumentList<>(
+                                positionalArguments,
+                                keywordArguments
+                        )
+                ),
+                parser.expression()
         );
     }
 }

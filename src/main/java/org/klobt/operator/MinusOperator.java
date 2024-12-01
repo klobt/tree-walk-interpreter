@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class MinusOperator implements BinaryOperator, UnaryOperator {
     @Override
-    public Value binaryOperation(Context context, Node node, Value left, Value right) {
+    public Value evaluate(Context context, Node node, Value left, Value right) {
         if (!(left instanceof NumberValue && right instanceof NumberValue)) {
             throw new Error(context.getInput(), node.getStart(), node.getEnd(), "Both operands of subtraction must be numbers");
         }
@@ -28,7 +28,7 @@ public class MinusOperator implements BinaryOperator, UnaryOperator {
     }
 
     @Override
-    public Value unaryOperation(Context context, Node node, Value argument) {
+    public Value evaluate(Context context, Node node, Value argument) {
         if (!(argument instanceof NumberValue)) {
             throw new Error(context.getInput(), node.getStart(), node.getEnd(), "The operand of negation must be a number");
         }

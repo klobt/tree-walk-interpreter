@@ -1,5 +1,6 @@
 package org.klobt;
 
+import org.klobt.builtin.PrintBuiltin;
 import org.klobt.operator.*;
 import org.klobt.token.*;
 
@@ -194,11 +195,17 @@ public class Tokenizer {
                     case "true":
                         tokens.add(new BooleanToken(start, i, true));
                         break;
+                    case "null":
+                        tokens.add(new NullToken(start, i));
+                        break;
                     case "if":
                         tokens.add(new IfToken(start, i));
                         break;
                     case "else":
                         tokens.add(new ElseToken(start, i));
+                        break;
+                    case "print":
+                        tokens.add(new BuiltinToken(start, i, new PrintBuiltin()));
                         break;
                     default:
                         tokens.add(new NameToken(start, i, value));

@@ -1,5 +1,7 @@
 package org.klobt;
 
+import org.jetbrains.annotations.Contract;
+
 import org.klobt.ast.*;
 import org.klobt.operator.BinaryOperator;
 import org.klobt.operator.Precedence;
@@ -8,6 +10,7 @@ import org.klobt.token.*;
 import org.klobt.value.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Parser {
@@ -51,6 +54,7 @@ public class Parser {
         return currentTokenIndex >= tokens.size();
     }
 
+    @Contract("_ -> fail")
     private void error(String message) {
         int start, end;
 
@@ -65,6 +69,7 @@ public class Parser {
         throw new Error(input, start, end, message);
     }
 
+    @SafeVarargs
     private void expect(Class<? extends Token>... cs) {
         for (Class<? extends Token> c : cs) {
             if (c.isInstance(current())) {
@@ -122,13 +127,20 @@ public class Parser {
             advance();
 
             return new LiteralNode(start, end, new StringValue(token.getValue()));
-        } else if (current() instanceof NameToken token) {
+        } else if (current() instanceof BuiltinToken token) {
             int start = current().getStart();
             int end = current().getEnd();
 
             advance();
 
-            return new VariableNode(start, end, token.getValue());
+            return new LiteralNode(start, end, new BuiltinValue(token.getBuiltin()));
+        } else if (current() instanceof NullToken) {
+            int start = current().getStart();
+            int end = current().getEnd();
+
+            advance();
+
+            return new LiteralNode(start, end, new NullValue());
         }
 
         return null;
@@ -139,6 +151,13 @@ public class Parser {
 
         if ((node = literal()) != null) {
             return node;
+        } else if (current() instanceof NameToken token) {
+            int start = current().getStart();
+            int end = current().getEnd();
+
+            advance();
+
+            return new VariableNode(start, end, token.getValue());
         } else if (current() instanceof LParenToken) {
             advance();
 
@@ -156,6 +175,75 @@ public class Parser {
         return null;
     }
 
+    private ArgumentList<Node> argumentList() {
+        List<Node> positionalArguments = new ArrayList<>();
+        HashMap<String, Node> keywordArguments = new HashMap<>();
+        Node argument;
+
+        while (!isEOF() && !(current() instanceof NameToken && canPeek() && peek() instanceof AssignToken) && (argument = expression()) != null) {
+            positionalArguments.add(argument);
+
+            if (current() instanceof CommaToken) {
+                advance();
+            } else {
+                return new ArgumentList<>(positionalArguments, keywordArguments);
+            }
+        }
+
+        while (!isEOF() && current() instanceof NameToken nameToken && canPeek() && peek() instanceof AssignToken) {
+            advance();
+            advance();
+            argument = expression();
+            if (argument == null) {
+                error("Expected expression");
+            }
+            keywordArguments.put(nameToken.getValue(), argument);
+        }
+
+        return new ArgumentList<>(positionalArguments, keywordArguments);
+    }
+
+    private Node postfix() {
+        int start, end;
+        Node node = atom();
+        if (node == null) {
+            return null;
+        }
+
+        start = node.getStart();
+
+        while (!isEOF()) {
+            if (current() instanceof LParenToken) {
+                advance();
+
+                ArgumentList<Node> arguments = argumentList();
+
+                expect(RParenToken.class);
+                end = current().getEnd();
+                advance();
+
+                node = new CallNode(start, end, node, arguments);
+            } else if (current() instanceof LBracketToken) {
+                advance();
+
+                Node index = expression();
+                if (index == null) {
+                    error("Expected expression");
+                }
+
+                expect(RBracketToken.class);
+                end = current().getEnd();
+                advance();
+
+                node = new IndexNode(start, end, node, index);
+            } else {
+                break;
+            }
+        }
+
+        return node;
+    }
+
     private Node unary() {
         Node node;
 
@@ -168,9 +256,9 @@ public class Parser {
             if ((node = unary()) != null) {
                 return new UnaryOperationNode(start, node.getEnd(), node, operator);
             } else {
-                error("Expected unary operator or literal");
+                error("Expected unary operator or postfix or atom");
             }
-        } else if ((node = atom()) != null) {
+        } else if ((node = postfix()) != null) {
             return node;
         }
 
@@ -190,6 +278,9 @@ public class Parser {
                 expectMoreTokens();
 
                 Node right = precedence.isLeftAssociative() ? (precedence.isLast() ? unary() : binary(precedence.next())) : binary(precedence);
+                if (right == null) {
+                    error("Unexpected token");
+                }
 
                 left = new BinaryOperationNode(left.getStart(), right.getEnd(), left, right, operator);
             } else {
@@ -245,7 +336,6 @@ public class Parser {
             node = block();
             if (node == null) {
                 error("Expected block");
-                return null;
             }
 
             expect(RBraceToken.class);

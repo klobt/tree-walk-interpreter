@@ -1,6 +1,7 @@
 package org.klobt;
 
 import org.junit.jupiter.api.Test;
+import org.klobt.builtin.PrintBuiltin;
 import org.klobt.operator.*;
 import org.klobt.token.*;
 
@@ -108,6 +109,14 @@ public class TokenizerTest {
         assertInstanceOf(PeriodToken.class, tokens.get(9));
         assertInstanceOf(CommaToken.class, tokens.get(10));
         assertInstanceOf(OperatorToken.class, tokens.get(11));
+    }
+
+    @Test
+    public void testTokenizeBuiltins() {
+        List<Token> tokens = tokenizer.tokenize("print");
+        assertEquals(1, tokens.size());
+        assertInstanceOf(BuiltinToken.class, tokens.getFirst());
+        assertInstanceOf(PrintBuiltin.class, ((BuiltinToken) tokens.getFirst()).getBuiltin());
     }
 
     @Test

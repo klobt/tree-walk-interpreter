@@ -5,7 +5,7 @@ import org.klobt.ast.Node;
 import org.klobt.value.Value;
 
 public interface BinaryOperator {
-    Value binaryOperation(Context context, Node node, Value left, Value right);
+    Value evaluate(Context context, Node node, Value left, Value right);
 
     Precedence precedence();
 }

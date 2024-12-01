@@ -8,7 +8,7 @@ import org.klobt.value.Value;
 
 public class MultiplyOperator implements BinaryOperator {
     @Override
-    public Value binaryOperation(Context context, Node node, Value left, Value right) {
+    public Value evaluate(Context context, Node node, Value left, Value right) {
         if (!(left instanceof NumberValue && right instanceof NumberValue)) {
             throw new Error(context.getInput(), node.getStart(), node.getEnd(), "Both operands of multiplication must be numbers");
         }
