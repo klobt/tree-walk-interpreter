@@ -1,5 +1,9 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
+import org.klobt.value.NullValue;
+import org.klobt.value.Value;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -51,5 +55,14 @@ public class BlockNode extends Node {
         }
 
         return true;
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        for (Node node : nodes) {
+            node.evaluate(context);
+        }
+
+        return new NullValue();
     }
 }

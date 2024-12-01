@@ -1,6 +1,10 @@
 package org.klobt.ast;
 
 import org.klobt.ArgumentList;
+import org.klobt.Context;
+import org.klobt.Error;
+import org.klobt.value.Callable;
+import org.klobt.value.Value;
 
 import java.util.Objects;
 
@@ -28,5 +32,14 @@ public class CallNode extends Node {
         CallNode that = (CallNode) o;
 
         return Objects.equals(node, that.node) && Objects.equals(arguments, that.arguments);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        if (node.evaluate(context) instanceof Callable callable) {
+            return callable.call(context, this, arguments.map((Node node) -> node.evaluate(context)));
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Expected a callable");
+        }
     }
 }

@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
 import org.klobt.operator.UnaryOperator;
+import org.klobt.value.Value;
 
 import java.util.Objects;
 
@@ -28,5 +30,10 @@ public class UnaryOperationNode extends Node {
         UnaryOperationNode that = (UnaryOperationNode) o;
 
         return Objects.equals(node, that.node) && Objects.equals(operator, that.operator);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        return operator.evaluate(context, this, node.evaluate(context));
     }
 }

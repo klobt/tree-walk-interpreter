@@ -1,6 +1,9 @@
 package org.klobt.ast;
 
 import org.klobt.ArgumentList;
+import org.klobt.Context;
+import org.klobt.value.NullValue;
+import org.klobt.value.Value;
 
 import java.util.Objects;
 
@@ -28,5 +31,11 @@ public class IndexNode extends Node {
         IndexNode that = (IndexNode) o;
 
         return Objects.equals(node, that.node) && Objects.equals(index, that.index);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        // TODO implement array index
+        return new NullValue();
     }
 }

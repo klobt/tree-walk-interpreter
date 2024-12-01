@@ -1,5 +1,7 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
+import org.klobt.value.NullValue;
 import org.klobt.value.Value;
 
 import java.util.Objects;
@@ -28,5 +30,12 @@ public class AssignmentNode extends Node {
         AssignmentNode that = (AssignmentNode) o;
 
         return Objects.equals(name, that.name) && Objects.equals(node, that.node);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        context.setVariable(name, node.evaluate(context));
+
+        return new NullValue();
     }
 }

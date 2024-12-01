@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
 import org.klobt.operator.BinaryOperator;
+import org.klobt.value.Value;
 
 import java.util.Objects;
 
@@ -29,5 +31,10 @@ public class BinaryOperationNode extends Node {
         BinaryOperationNode that = (BinaryOperationNode) o;
 
         return Objects.equals(leftNode, that.leftNode) && Objects.equals(rightNode, that.rightNode) && Objects.equals(operator, that.operator);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        return operator.evaluate(context, this, leftNode.evaluate(context), rightNode.evaluate(context));
     }
 }

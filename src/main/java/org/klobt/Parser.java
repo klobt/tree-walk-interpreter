@@ -395,4 +395,10 @@ public class Parser {
 
         return new BlockNode(nodes.getFirst().getStart(), nodes.getLast().getEnd(), nodes);
     }
+
+    public Node program() {
+        Node node = block();
+
+        return new ProgramNode(node.getStart(), node.getEnd(), node);
+    }
 }

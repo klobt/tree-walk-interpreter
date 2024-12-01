@@ -1,5 +1,6 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
 import org.klobt.value.Value;
 
 import java.util.Objects;
@@ -26,5 +27,10 @@ public class LiteralNode extends Node {
         LiteralNode that = (LiteralNode) o;
 
         return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        return value;
     }
 }

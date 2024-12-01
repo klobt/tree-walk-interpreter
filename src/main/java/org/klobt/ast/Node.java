@@ -1,5 +1,8 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
+import org.klobt.value.Value;
+
 public abstract class Node {
     private int start, end;
 
@@ -23,6 +26,8 @@ public abstract class Node {
     public void setEnd(int end) {
         this.end = end;
     }
+
+    public abstract Value evaluate(Context context);
 
     @Override
     public int hashCode() {

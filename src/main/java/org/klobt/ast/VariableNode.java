@@ -1,5 +1,8 @@
 package org.klobt.ast;
 
+import org.klobt.Context;
+import org.klobt.value.Value;
+
 import java.util.Objects;
 
 public class VariableNode extends Node {
@@ -24,5 +27,10 @@ public class VariableNode extends Node {
         VariableNode that = (VariableNode) o;
 
         return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public Value evaluate(Context context) {
+        return context.getVariable(name);
     }
 }

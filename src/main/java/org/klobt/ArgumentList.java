@@ -1,8 +1,10 @@
 package org.klobt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public class ArgumentList<T> {
     private final List<T> positionalArguments;
@@ -69,5 +71,20 @@ public class ArgumentList<T> {
     @Override
     public int hashCode() {
         return Objects.hash(positionalArguments, keywordArguments);
+    }
+
+    public <S> ArgumentList<S> map(Function<T, S> function) {
+        List<S> newPositionalArguments = new ArrayList<>();
+        HashMap<String, S> newKeywordArguments = new HashMap<>();
+
+        for (T argument : positionalArguments) {
+            newPositionalArguments.add(function.apply(argument));
+        }
+
+        for (String key : keywordArguments.keySet()) {
+            newKeywordArguments.put(key, function.apply(keywordArguments.get(key)));
+        }
+
+        return new ArgumentList<>(newPositionalArguments, newKeywordArguments);
     }
 }
