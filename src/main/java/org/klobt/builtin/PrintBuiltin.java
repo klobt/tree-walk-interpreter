@@ -16,19 +16,29 @@ public class PrintBuiltin extends Builtin {
             throw new Error(context.getInput(), node.getStart(), node.getEnd(), "No keyword arguments allowed");
         }
 
+        boolean isFirst = true;
+
         for (Value argument : arguments.getPositionalArguments()) {
+            if (!isFirst) {
+                context.getWriter().write(" ");
+            }
+
             if (argument instanceof BooleanValue value) {
-                System.out.println(value.getValue());
+                context.getWriter().write(value.getValue() ? "true" : "false");
             } else if (argument instanceof NullValue) {
-                System.out.println("null");
+                context.getWriter().write("null");
             } else if (argument instanceof NumberValue value) {
-                System.out.println(value.getValue());
+                context.getWriter().write(String.valueOf(value.getValue()));
             } else if (argument instanceof StringValue value) {
-                System.out.println(value.getValue());
+                context.getWriter().write(value.getValue());
             } else if (argument instanceof BuiltinValue value) {
-                System.out.println("<builtin " + value.getBuiltin() + ">");
+                context.getWriter().write("<builtin " + value.getBuiltin() + ">");
+            } else {
+                throw new Error(context.getInput(), node.getStart(), node.getEnd(), "Unexpected value: " + argument);
             }
         }
+
+        context.getWriter().write("\r\n");
 
         return new NullValue();
     }
