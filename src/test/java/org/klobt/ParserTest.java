@@ -9,6 +9,7 @@ import org.klobt.value.NumberValue;
 import org.klobt.value.StringValue;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -193,6 +194,61 @@ public class ParserTest {
                         nodes
                 ),
                 parser.statement()
+        );
+    }
+
+    @Test
+    public void testIfStatement() {
+        String input = "if(true){1;}else if(false){2;}else 3;";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new IfToken(0, 2));
+        tokens.add(new LParenToken(2, 3));
+        tokens.add(new BooleanToken(3, 7, true));
+        tokens.add(new RParenToken(7, 8));
+        tokens.add(new LBraceToken(8, 9));
+        tokens.add(new NumberToken(9, 10, 1));
+        tokens.add(new SemicolonToken(10, 11));
+        tokens.add(new RBraceToken(11, 12));
+        tokens.add(new ElseToken(12, 13));
+        tokens.add(new IfToken(14, 15));
+        tokens.add(new LParenToken(16, 17));
+        tokens.add(new BooleanToken(17, 18, false));
+        tokens.add(new RParenToken(19, 20));
+        tokens.add(new LBraceToken(21, 22));
+        tokens.add(new NumberToken(22, 23, 2));
+        tokens.add(new SemicolonToken(23, 24));
+        tokens.add(new RBraceToken(24, 25));
+        tokens.add(new ElseToken(25, 26));
+        tokens.add(new NumberToken(27, 28, 3));
+        tokens.add(new SemicolonToken(28, 29));
+
+        Parser parser = new Parser(input, tokens);
+
+        assertEquals(
+                new BlockNode(
+                        0, 0,
+                        Collections.singletonList(
+                                new BranchNode(
+                                        0, 0,
+                                        new LiteralNode(0, 0, new BooleanValue(true)),
+                                        new BlockNode(
+                                                0, 0,
+                                                Collections.singletonList(new LiteralNode(0, 0, new NumberValue(1)))
+                                        ),
+                                        new BranchNode(
+                                                0, 0,
+                                                new LiteralNode(0, 0, new BooleanValue(false)),
+                                                new BlockNode(
+                                                        0, 0,
+                                                        Collections.singletonList(new LiteralNode(0, 0, new NumberValue(2)))
+                                                ),
+                                                new LiteralNode(0, 0, new NumberValue(3))
+                                        )
+                                )
+                        )
+                ),
+                parser.block()
         );
     }
 }

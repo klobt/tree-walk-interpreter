@@ -1,7 +1,7 @@
 package org.klobt.ast;
 
 public abstract class Node {
-    private final int start, end;
+    private int start, end;
 
     public Node(int start, int end) {
         this.start = start;
@@ -14,6 +14,14 @@ public abstract class Node {
 
     public int getEnd() {
         return end;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public void setEnd(int end) {
+        this.end = end;
     }
 
     @Override

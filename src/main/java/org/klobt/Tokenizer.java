@@ -198,6 +198,12 @@ public class Tokenizer {
                     case "true":
                         tokens.add(new BooleanToken(start, i, true));
                         break;
+                    case "if":
+                        tokens.add(new IfToken(start, i));
+                        break;
+                    case "else":
+                        tokens.add(new ElseToken(start, i));
+                        break;
                     default:
                         tokens.add(new NameToken(start, i, value));
                 }

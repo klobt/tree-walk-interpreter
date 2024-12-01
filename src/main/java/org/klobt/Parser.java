@@ -227,26 +227,69 @@ public class Parser {
 
         if ((node = assignment()) != null) {
             expect(SemicolonToken.class);
+            node.setEnd(current().getEnd());
             advance();
 
             return node;
         } else if ((node = expression()) != null) {
             expect(SemicolonToken.class);
+            node.setEnd(current().getEnd());
             advance();
 
             return node;
         } else if (current() instanceof LBraceToken) {
+            int start = current().getStart();
+
             advance();
 
             node = block();
             if (node == null) {
                 error("Expected block");
+                return null;
             }
 
             expect(RBraceToken.class);
+            node.setStart(start);
+            node.setEnd(current().getEnd());
             advance();
 
             return node;
+        } else if (current() instanceof IfToken) {
+            Node ifStatement, elseStatement = null;
+            int start = current().getStart(), end;
+
+            advance();
+
+            expect(LParenToken.class);
+            advance();
+
+            node = expression();
+            if (node == null) {
+                error("Expected expression");
+            }
+
+            expect(RParenToken.class);
+            advance();
+
+            ifStatement = statement();
+            if (ifStatement == null) {
+                error("Expected statement");
+            }
+
+            end = ifStatement.getEnd();
+
+            if (current() instanceof ElseToken) {
+                advance();
+
+                elseStatement = statement();
+                if (elseStatement == null) {
+                    error("Expected statement");
+                }
+
+                end = elseStatement.getEnd();
+            }
+
+            return new BranchNode(start, end, node, ifStatement, elseStatement);
         } else {
             return null;
         }

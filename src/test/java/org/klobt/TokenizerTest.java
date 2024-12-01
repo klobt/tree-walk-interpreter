@@ -85,6 +85,14 @@ public class TokenizerTest {
     }
 
     @Test
+    public void testTokenizeKeywords() {
+        List<Token> tokens = tokenizer.tokenize("if else");
+        assertEquals(2, tokens.size());
+        assertInstanceOf(IfToken.class, tokens.get(0));
+        assertInstanceOf(ElseToken.class, tokens.get(1));
+    }
+
+    @Test
     public void testTokenizeErrorUnterminatedString() {
         Error error = assertThrows(Error.class, () -> tokenizer.tokenize("\"unterminated string"));
         assertTrue(error.getMessage().contains("Unterminated string literal"));
