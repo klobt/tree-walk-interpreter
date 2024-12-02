@@ -102,7 +102,15 @@ public class Parser {
     }
 
     public PureNode expression() {
-        return binary(Precedence.START);
+        PureNode node;
+
+        if ((node = functionDefinition()) != null) {
+            return node;
+        } else if ((node = binary(Precedence.START)) != null) {
+            return node;
+        } else {
+            return null;
+        }
     }
 
     private PureNode literal() {
@@ -201,6 +209,74 @@ public class Parser {
         }
 
         return new ArgumentList<>(positionalArguments, keywordArguments);
+    }
+
+
+    private PureNode functionDefinition() {
+        List<String> positionalArguments = new ArrayList<>();
+        HashMap<String, PureNode> keywordArguments = new HashMap<>();
+
+        if (current() instanceof FunctionToken) {
+            int start = current().getStart(), end = current().getEnd();
+            advance();
+
+            expect(LParenToken.class);
+            advance();
+
+            functionDefinitionArguments(positionalArguments, keywordArguments);
+
+            expect(RParenToken.class);
+            advance();
+
+            Node body;
+
+            if (current() instanceof LBraceToken) {
+                advance();
+
+                body = block();
+                if (body == null) {
+                    error("Expected block");
+                }
+
+                expect(RBraceToken.class);
+                end = current().getEnd();
+                advance();
+            } else if ((body = expression()) != null) {
+                end = body.getEnd();
+            } else {
+                error("Expected expression or block");
+            }
+
+            return new FunctionDefinitionNode(start, end, positionalArguments, keywordArguments, body);
+        } else {
+            return null;
+        }
+    }
+
+    private void functionDefinitionArguments(List<String> positionalArguments, HashMap<String, PureNode> keywordArguments) {
+        while (!isEOF() && !(current() instanceof NameToken && canPeek() && peek() instanceof AssignToken) && (current() instanceof NameToken name)) {
+            advance();
+            
+            positionalArguments.add(name.getValue());
+
+            if (current() instanceof CommaToken) {
+                advance();
+            } else {
+                return;
+            }
+        }
+
+        PureNode defaultValue;
+
+        while (!isEOF() && current() instanceof NameToken name && canPeek() && peek() instanceof AssignToken) {
+            advance();
+            advance();
+            defaultValue = expression();
+            if (defaultValue == null) {
+                error("Expected expression");
+            }
+            keywordArguments.put(name.getValue(), defaultValue);
+        }
     }
 
     private PureNode postfix() {
@@ -420,6 +496,20 @@ public class Parser {
             advance();
 
             return new ContinueNode(start, end);
+        } else if (current() instanceof ReturnToken) {
+            int start = current().getStart(), end = current().getEnd();
+            advance();
+
+            PureNode valueNode = expression();
+
+            if (valueNode == null) {
+                valueNode = new LiteralNode(start, end, new NullValue());
+            }
+
+            expect(SemicolonToken.class);
+            advance();
+
+            return new ReturnNode(start, valueNode.getEnd(), valueNode);
         } else {
             return null;
         }

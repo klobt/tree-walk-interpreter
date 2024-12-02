@@ -327,4 +327,49 @@ public class ParserTest {
                 parser.expression()
         );
     }
+
+    @Test
+    public void testFunctionDefintion() {
+        String input = "function      (one,two,three=3){return two;}";
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new FunctionToken(0, 8));
+        tokens.add(new LParenToken(13, 14));
+        tokens.add(new NameToken(14, 17, "one"));
+        tokens.add(new CommaToken(17, 18));
+        tokens.add(new NameToken(18, 21, "two"));
+        tokens.add(new CommaToken(21, 22));
+        tokens.add(new NameToken(22, 27, "three"));
+        tokens.add(new AssignToken(27, 28));
+        tokens.add(new NumberToken(28, 29, 3));
+        tokens.add(new RParenToken(29, 30));
+        tokens.add(new LBraceToken(31, 32));
+        tokens.add(new ReturnToken(32, 38));
+        tokens.add(new NameToken(38, 41, "two"));
+        tokens.add(new SemicolonToken(41, 42));
+        tokens.add(new RBraceToken(42, 43));
+
+        Parser parser = new Parser(input, tokens);
+
+        List<String> positionalArguments = new ArrayList<>();
+        HashMap<String, PureNode> keywordArguments = new HashMap<>();
+
+        positionalArguments.add("one");
+        positionalArguments.add("two");
+        keywordArguments.put("three", new LiteralNode(0, 0, new NumberValue(3)));
+
+        List<Node> block = new ArrayList<>();
+
+        block.add(new ReturnNode(0, 0, new VariableNode(0, 0, "two")));
+
+        assertEquals(
+                new FunctionDefinitionNode(
+                        0, 0,
+                        positionalArguments,
+                        keywordArguments,
+                        new BlockNode(0, 0, block)
+                ),
+                parser.expression()
+        );
+    }
 }

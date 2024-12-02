@@ -4,6 +4,7 @@ import org.klobt.Context;
 import org.klobt.Error;
 import org.klobt.control.BreakException;
 import org.klobt.control.ContinueException;
+import org.klobt.control.ReturnException;
 import org.klobt.value.BooleanValue;
 import org.klobt.value.NumberValue;
 import org.klobt.value.Value;
@@ -39,7 +40,7 @@ public class ProgramNode extends PureNode {
     public Value evaluate(Context context) {
         try {
             node.evaluate(context);
-        } catch (BreakException | ContinueException e) {
+        } catch (BreakException | ContinueException | ReturnException e) {
             //
         }
 

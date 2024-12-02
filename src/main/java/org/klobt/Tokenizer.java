@@ -213,6 +213,12 @@ public class Tokenizer {
                     case "continue":
                         tokens.add(new ContinueToken(start, i));
                         break;
+                    case "function":
+                        tokens.add(new FunctionToken(start, i));
+                        break;
+                    case "return":
+                        tokens.add(new ReturnToken(start, i));
+                        break;
                     case "print":
                         tokens.add(new BuiltinToken(start, i, new PrintBuiltin()));
                         break;

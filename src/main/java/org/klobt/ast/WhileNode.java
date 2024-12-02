@@ -4,6 +4,7 @@ import org.klobt.Context;
 import org.klobt.Error;
 import org.klobt.control.BreakException;
 import org.klobt.control.ContinueException;
+import org.klobt.control.ReturnException;
 import org.klobt.value.BooleanValue;
 import org.klobt.value.NullValue;
 import org.klobt.value.Value;
@@ -37,7 +38,7 @@ public class WhileNode extends Node {
     }
 
     @Override
-    public Value evaluate(Context context) throws BreakException, ContinueException {
+    public Value evaluate(Context context) throws BreakException, ContinueException, ReturnException {
         if (condition.evaluate(context) instanceof BooleanValue conditionValue) {
             if (conditionValue.getValue()) {
                 while (true) {

@@ -3,6 +3,7 @@ package org.klobt.ast;
 import org.klobt.Context;
 import org.klobt.control.BreakException;
 import org.klobt.control.ContinueException;
+import org.klobt.control.ReturnException;
 import org.klobt.value.Value;
 
 public abstract class Node {
@@ -29,7 +30,7 @@ public abstract class Node {
         this.end = end;
     }
 
-    public abstract Value evaluate(Context context) throws BreakException, ContinueException;
+    public abstract Value evaluate(Context context) throws BreakException, ContinueException, ReturnException;
 
     @Override
     public int hashCode() {

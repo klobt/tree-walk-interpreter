@@ -121,4 +121,30 @@ public class ProgramTest {
                 "3.0\r\n5.0\r\n7.0\r\n9.0\r\n"
         );
     }
+
+    @Test
+    public void testFunction() {
+        assertProgram(
+                new StringBuilder()
+                        .append("addTwo = function (x) x + 2;")
+                        .append("print(addTwo(10));")
+                        .toString(),
+                new NumberValue(0),
+                "12.0\r\n"
+        );
+    }
+
+    @Test
+    public void testFunctionReturn() {
+        assertProgram(
+                new StringBuilder()
+                        .append("addTwo = function (x) {")
+                        .append("  return x + 2;")
+                        .append("};")
+                        .append("print(addTwo(10));")
+                        .toString(),
+                new NumberValue(0),
+                "12.0\r\n"
+        );
+    }
 }

@@ -5,16 +5,19 @@ import org.klobt.value.NullValue;
 import org.klobt.value.Value;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 public class Context {
     private final String input;
     private final Writer writer;
-    private final HashMap<String, Value> namespace;
+    private final Stack<HashMap<String, Value>> scopes;
 
     public Context(String input, Writer writer) {
         this.input = input;
         this.writer = writer;
-        this.namespace = new HashMap<>();
+        this.scopes = new Stack<>();
+        this.scopes.add(new HashMap<>());
     }
 
     public String getInput() {
@@ -26,10 +29,28 @@ public class Context {
     }
 
     public Value getVariable(String name) {
-        return namespace.getOrDefault(name, new NullValue());
+        Value value;
+
+        for (HashMap<String, Value> namespace : scopes.reversed()) {
+            value = namespace.get(name);
+
+            if (value != null) {
+                return value;
+            }
+        }
+
+        return new NullValue();
     }
 
     public void setVariable(String name, Value value) {
-        namespace.put(name, value);
+        scopes.peek().put(name, value);
+    }
+
+    public void pushScope() {
+        this.scopes.push(new HashMap<>());
+    }
+
+    public void popScope() {
+        this.scopes.pop();
     }
 }

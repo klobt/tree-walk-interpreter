@@ -4,8 +4,6 @@ import org.klobt.Context;
 import org.klobt.control.BreakException;
 import org.klobt.value.Value;
 
-import java.util.Objects;
-
 public class BreakNode extends Node {
     public BreakNode(int start, int end) {
         super(start, end);
