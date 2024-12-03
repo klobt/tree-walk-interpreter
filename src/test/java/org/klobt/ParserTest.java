@@ -155,7 +155,7 @@ public class ParserTest {
         assertEquals(
                 new AssignmentNode(
                         0, 9,
-                        "x",
+                        new VariableNode(0, 0, "x"),
                         new BinaryOperationNode(
                                 1, 6,
                                 new LiteralNode(1, 2, new NumberValue(2)),

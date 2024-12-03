@@ -113,7 +113,7 @@ public class Parser {
         }
     }
 
-    private PureNode literal() {
+    private LiteralNode literal() {
         if (current() instanceof BooleanToken token) {
             int start = current().getStart();
             int end = current().getEnd();
@@ -154,18 +154,26 @@ public class Parser {
         return null;
     }
 
-    private PureNode atom() {
-        PureNode node;
-
-        if ((node = literal()) != null) {
-            return node;
-        } else if (current() instanceof NameToken token) {
+    private VariableNode variable() {
+        if (current() instanceof NameToken token) {
             int start = current().getStart();
             int end = current().getEnd();
 
             advance();
 
             return new VariableNode(start, end, token.getValue());
+        } else {
+            return null;
+        }
+    }
+
+    private PureNode atom() {
+        PureNode node;
+
+        if ((node = literal()) != null) {
+            return node;
+        } else if ((node = variable()) != null) {
+            return node;
         } else if (current() instanceof LParenToken) {
             advance();
 
@@ -282,6 +290,51 @@ public class Parser {
         keywordArguments(keywordArguments);
     }
 
+    private LHSNode lhs() {
+        int start, end;
+        LHSNode node = variable();
+        if (node == null) {
+            return null;
+        }
+
+        start = node.getStart();
+
+        label:
+        while (!isEOF()) {
+            switch (current()) {
+                case LBracketToken _:
+                    advance();
+
+                    PureNode index = expression();
+                    if (index == null) {
+                        error("Expected expression");
+                    }
+
+                    expect(RBracketToken.class);
+                    end = current().getEnd();
+                    advance();
+
+                    node = new IndexNode(start, end, node, index);
+                    break;
+                case PeriodToken _:
+                    advance();
+
+                    expect(NameToken.class);
+                    String memberName = ((NameToken) current()).getValue();
+                    end = current().getEnd();
+                    advance();
+
+                    node = new MemberNode(start, end, node, memberName);
+                    break;
+                case null:
+                default:
+                    break label;
+            }
+        }
+
+        return node;
+    }
+
     private PureNode postfix() {
         int start, end;
         PureNode node = atom();
@@ -396,18 +449,18 @@ public class Parser {
     }
 
     private Node assignment() {
+        LHSNode lhs;
+
         save();
 
-        if (current() instanceof NameToken token) {
-            advance();
-
+        if ((lhs = lhs()) != null) {
             if (current() instanceof AssignToken) {
                 advance();
 
                 Node node = expression();
 
                 if (node != null) {
-                    return new AssignmentNode(token.getStart(), node.getEnd(), token.getValue(), node);
+                    return new AssignmentNode(lhs.getStart(), node.getEnd(), lhs, node);
                 }
             }
         }

@@ -10,18 +10,18 @@ import org.klobt.value.Value;
 import java.util.Objects;
 
 public class AssignmentNode extends Node {
-    private final String name;
+    private final LHSNode lhs;
     private final Node node;
 
-    public AssignmentNode(int start, int end, String name, Node node) {
+    public AssignmentNode(int start, int end, LHSNode lhs, Node node) {
         super(start, end);
-        this.name = name;
+        this.lhs = lhs;
         this.node = node;
     }
 
     @Override
     public String toString() {
-        return "Assignment(" + name + ", " + node + ")";
+        return "Assignment(" + lhs + ", " + node + ")";
     }
 
     @Override
@@ -32,12 +32,12 @@ public class AssignmentNode extends Node {
 
         AssignmentNode that = (AssignmentNode) o;
 
-        return Objects.equals(name, that.name) && Objects.equals(node, that.node);
+        return Objects.equals(lhs, that.lhs) && Objects.equals(node, that.node);
     }
 
     @Override
     public Value evaluate(Context context) throws BreakException, ContinueException, ReturnException {
-        context.setVariable(name, node.evaluate(context));
+        lhs.assign(context, node.evaluate(context));
 
         return new NullValue();
     }

@@ -5,7 +5,7 @@ import org.klobt.io.Writer;
 import java.util.Objects;
 
 public class StringValue extends Value {
-    private final String value;
+    private String value;
 
     public StringValue(String value) {
         this.value = value;
@@ -13,6 +13,10 @@ public class StringValue extends Value {
 
     public String getValue() {
         return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

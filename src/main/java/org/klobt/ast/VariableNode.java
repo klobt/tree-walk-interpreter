@@ -5,7 +5,7 @@ import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class VariableNode extends PureNode {
+public class VariableNode extends LHSNode {
     private final String name;
 
     public VariableNode(int start, int end, String name) {
@@ -32,5 +32,10 @@ public class VariableNode extends PureNode {
     @Override
     public Value evaluate(Context context) {
         return context.getVariable(name);
+    }
+
+    @Override
+    public void assign(Context context, Value rhs) {
+        context.setVariable(name, rhs);
     }
 }

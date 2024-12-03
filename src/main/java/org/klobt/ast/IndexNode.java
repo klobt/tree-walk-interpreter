@@ -9,7 +9,7 @@ import org.klobt.value.Value;
 
 import java.util.Objects;
 
-public class IndexNode extends PureNode {
+public class IndexNode extends LHSNode {
     private final PureNode node;
     private final PureNode index;
 
@@ -59,6 +59,29 @@ public class IndexNode extends PureNode {
             } else {
                 throw new Error(context.getInput(), getStart(), getEnd(), "Index beyond bounds");
             }
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Value must be a string or an array");
+        }
+    }
+
+    @Override
+    public void assign(Context context, Value rhs) {
+        int i;
+
+        if (index.evaluate(context) instanceof NumberValue indexValue) {
+            i = (int) indexValue.getValue();
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Index must be a number");
+        }
+
+        Value value = node.evaluate(context);
+
+        if (value instanceof StringValue stringValue) {
+            stringValue.setValue(
+                    stringValue.getValue().substring(0, i) + rhs + stringValue.getValue().substring(i + 1)
+            );
+        } else if (value instanceof ArrayValue arrayValue) {
+            arrayValue.getValues().set(i, rhs);
         } else {
             throw new Error(context.getInput(), getStart(), getEnd(), "Value must be a string or an array");
         }

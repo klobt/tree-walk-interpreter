@@ -216,6 +216,20 @@ public class ProgramTest {
 
     @SuppressWarnings("StringBufferReplaceableByString")
     @Test
+    public void testArrayRangeWithReassignment() {
+        assertProgram(
+                new StringBuilder()
+                        .append("r = range(1, 4);")
+                        .append("r[1] = 100.0;")
+                        .append("print(r);")
+                        .toString(),
+                new NumberValue(0),
+                "array(1.0, 100.0, 3.0)\r\n"
+        );
+    }
+
+    @SuppressWarnings("StringBufferReplaceableByString")
+    @Test
     public void testObject() {
         assertProgram(
                 new StringBuilder()
@@ -246,6 +260,44 @@ public class ProgramTest {
                         .toString(),
                 new NumberValue(0),
                 "Hello. I'm John.\r\n"
+        );
+    }
+
+    @SuppressWarnings("StringBufferReplaceableByString")
+    @Test
+    public void testObjectMethodWithReassignment() {
+        assertProgram(
+                new StringBuilder()
+                        .append("user = object(")
+                        .append("  name = 'John',")
+                        .append("  password = 'pass123',")
+                        .append("  greet = function (this) {")
+                        .append("    print('Hello. I\\'m ' .. this.name .. '.');")
+                        .append("  },")
+                        .append(");")
+                        .append("user:greet();")
+                        .append("user.name = 'Bill';")
+                        .append("user:greet();")
+                        .toString(),
+                new NumberValue(0),
+                "Hello. I'm John.\r\nHello. I'm Bill.\r\n"
+        );
+    }
+
+    @SuppressWarnings("StringBufferReplaceableByString")
+    @Test
+    public void testLayeredAssignment() {
+        assertProgram(
+                new StringBuilder()
+                        .append("x = object(")
+                        .append("  a = array(1, 2, 3),")
+                        .append(");")
+                        .append("print(x.a[1]);")
+                        .append("x.a[1] = 100;")
+                        .append("print(x.a[1]);")
+                        .toString(),
+                new NumberValue(0),
+                "2.0\r\n100.0\r\n"
         );
     }
 }

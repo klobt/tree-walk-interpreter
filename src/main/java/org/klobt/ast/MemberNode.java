@@ -6,7 +6,7 @@ import org.klobt.value.*;
 
 import java.util.Objects;
 
-public class MemberNode extends PureNode {
+public class MemberNode extends LHSNode {
     private final PureNode node;
     private final String memberName;
 
@@ -42,6 +42,17 @@ public class MemberNode extends PureNode {
             } else {
                 throw new Error(context.getInput(), getStart(), getEnd(), "Member variable not found");
             }
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Value must be an object");
+        }
+    }
+
+    @Override
+    public void assign(Context context, Value rhs) {
+        Value value = node.evaluate(context);
+
+        if (value instanceof ObjectValue objectValue) {
+            objectValue.getValues().put(memberName, rhs);
         } else {
             throw new Error(context.getInput(), getStart(), getEnd(), "Value must be an object");
         }
