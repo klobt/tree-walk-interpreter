@@ -294,7 +294,7 @@ public class Parser {
         label:
         while (!isEOF()) {
             switch (current()) {
-                case LParenToken lParenToken:
+                case LParenToken _:
                     advance();
 
                     ArgumentList<PureNode> arguments = argumentList();
@@ -305,7 +305,7 @@ public class Parser {
 
                     node = new CallNode(start, end, node, arguments);
                     break;
-                case LBracketToken lBracketToken:
+                case LBracketToken _:
                     advance();
 
                     PureNode index = expression();
@@ -319,7 +319,7 @@ public class Parser {
 
                     node = new IndexNode(start, end, node, index);
                     break;
-                case PeriodToken periodToken:
+                case PeriodToken _:
                     advance();
 
                     expect(NameToken.class);
@@ -329,7 +329,7 @@ public class Parser {
 
                     node = new MemberNode(start, end, node, memberName);
                     break;
-                case ColonToken colonToken:
+                case ColonToken _:
                     advance();
 
                     expect(NameToken.class);
