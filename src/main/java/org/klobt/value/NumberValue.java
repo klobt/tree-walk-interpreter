@@ -1,5 +1,7 @@
 package org.klobt.value;
 
+import org.klobt.io.Writer;
+
 public class NumberValue extends Value {
     private final double value;
 
@@ -25,5 +27,10 @@ public class NumberValue extends Value {
     @Override
     public String toString() {
         return "Number(" + value + ")";
+    }
+
+    @Override
+    public void print(Writer writer) {
+        writer.write(String.valueOf(value));
     }
 }

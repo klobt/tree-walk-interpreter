@@ -1,5 +1,7 @@
 package org.klobt.value;
 
+import org.klobt.io.Writer;
+
 public class BooleanValue extends Value {
     private final boolean value;
 
@@ -25,5 +27,10 @@ public class BooleanValue extends Value {
     @Override
     public String toString() {
         return "Boolean(" + value + ")";
+    }
+
+    @Override
+    public void print(Writer writer) {
+        writer.write(value ? "true" : "false");
     }
 }

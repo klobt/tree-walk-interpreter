@@ -4,6 +4,7 @@ import org.klobt.ArgumentList;
 import org.klobt.Context;
 import org.klobt.ast.Node;
 import org.klobt.builtin.Builtin;
+import org.klobt.io.Writer;
 
 import java.util.Objects;
 
@@ -37,5 +38,10 @@ public class BuiltinValue extends Value implements Callable {
     @Override
     public Value call(Context context, Node node, ArgumentList<Value> arguments) {
         return builtin.evaluate(context, node, arguments);
+    }
+
+    @Override
+    public void print(Writer writer) {
+        writer.write("<builtin " + builtin + ">");
     }
 }

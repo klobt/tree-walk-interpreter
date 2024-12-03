@@ -1,8 +1,10 @@
 package org.klobt.ast;
 
-import org.klobt.ArgumentList;
 import org.klobt.Context;
-import org.klobt.value.NullValue;
+import org.klobt.Error;
+import org.klobt.value.ArrayValue;
+import org.klobt.value.NumberValue;
+import org.klobt.value.StringValue;
 import org.klobt.value.Value;
 
 import java.util.Objects;
@@ -35,7 +37,30 @@ public class IndexNode extends PureNode {
 
     @Override
     public Value evaluate(Context context) {
-        // TODO implement array index
-        return new NullValue();
+        int i;
+
+        if (index.evaluate(context) instanceof NumberValue indexValue) {
+            i = (int) indexValue.getValue();
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Index must be a number");
+        }
+
+        Value value = node.evaluate(context);
+
+        if (value instanceof StringValue stringValue) {
+            if (i < stringValue.getValue().length()) {
+                return new StringValue(stringValue.getValue().substring(i, i + 1));
+            } else {
+                throw new Error(context.getInput(), getStart(), getEnd(), "Index beyond bounds");
+            }
+        } else if (value instanceof ArrayValue arrayValue) {
+            if (i < arrayValue.getValues().size()) {
+                return arrayValue.getValues().get(i);
+            } else {
+                throw new Error(context.getInput(), getStart(), getEnd(), "Index beyond bounds");
+            }
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Value must be a string or an array");
+        }
     }
 }

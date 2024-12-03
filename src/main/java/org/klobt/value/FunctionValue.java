@@ -6,6 +6,7 @@ import org.klobt.ast.Node;
 import org.klobt.control.BreakException;
 import org.klobt.control.ContinueException;
 import org.klobt.control.ReturnException;
+import org.klobt.io.Writer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +37,11 @@ public class FunctionValue extends Value implements Callable {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), positionalArguments, keywordArguments, body);
+    }
+
+    @Override
+    public void print(Writer writer) {
+        writer.write("<function>");
     }
 
     @Override

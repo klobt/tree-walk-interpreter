@@ -6,14 +6,17 @@ import org.klobt.Error;
 import org.klobt.ast.Node;
 import org.klobt.value.*;
 
-import java.util.HashMap;
-import java.util.List;
-
 public class PrintBuiltin extends Builtin {
     @Override
     public Value evaluate(Context context, Node node, ArgumentList<Value> arguments) {
-        if (!arguments.getKeywordArguments().isEmpty()) {
-            throw new Error(context.getInput(), node.getStart(), node.getEnd(), "No keyword arguments allowed");
+        String end;
+        Value endValue = arguments.getKeywordArguments().get("end");
+        if (endValue == null) {
+            end = "\r\n";
+        } else if (endValue instanceof StringValue value) {
+            end = value.getValue();
+        } else {
+            throw new Error(context.getInput(), node.getStart(), node.getEnd(), "The end parameter must be a string");
         }
 
         boolean isFirst = true;
@@ -23,22 +26,10 @@ public class PrintBuiltin extends Builtin {
                 context.getWriter().write(" ");
             }
 
-            if (argument instanceof BooleanValue value) {
-                context.getWriter().write(value.getValue() ? "true" : "false");
-            } else if (argument instanceof NullValue) {
-                context.getWriter().write("null");
-            } else if (argument instanceof NumberValue value) {
-                context.getWriter().write(String.valueOf(value.getValue()));
-            } else if (argument instanceof StringValue value) {
-                context.getWriter().write(value.getValue());
-            } else if (argument instanceof BuiltinValue value) {
-                context.getWriter().write("<builtin " + value.getBuiltin() + ">");
-            } else {
-                throw new Error(context.getInput(), node.getStart(), node.getEnd(), "Unexpected value: " + argument);
-            }
+            argument.print(context.getWriter());
         }
 
-        context.getWriter().write("\r\n");
+        context.getWriter().write(end);
 
         return new NullValue();
     }

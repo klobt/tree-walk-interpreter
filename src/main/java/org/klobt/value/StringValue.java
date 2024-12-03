@@ -1,5 +1,7 @@
 package org.klobt.value;
 
+import org.klobt.io.Writer;
+
 import java.util.Objects;
 
 public class StringValue extends Value {
@@ -27,5 +29,10 @@ public class StringValue extends Value {
     @Override
     public String toString() {
         return "String(" + value + ")";
+    }
+
+    @Override
+    public void print(Writer writer) {
+        writer.write(value);
     }
 }

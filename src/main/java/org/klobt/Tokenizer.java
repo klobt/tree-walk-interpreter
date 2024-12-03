@@ -1,6 +1,6 @@
 package org.klobt;
 
-import org.klobt.builtin.PrintBuiltin;
+import org.klobt.builtin.*;
 import org.klobt.operator.*;
 import org.klobt.token.*;
 
@@ -221,6 +221,27 @@ public class Tokenizer {
                         break;
                     case "print":
                         tokens.add(new BuiltinToken(start, i, new PrintBuiltin()));
+                        break;
+                    case "array":
+                        tokens.add(new BuiltinToken(start, i, new ArrayBuiltin()));
+                        break;
+                    case "length":
+                        tokens.add(new BuiltinToken(start, i, new LengthBuiltin()));
+                        break;
+                    case "pop":
+                        tokens.add(new BuiltinToken(start, i, new PopBuiltin()));
+                        break;
+                    case "push":
+                        tokens.add(new BuiltinToken(start, i, new PushBuiltin()));
+                        break;
+                    case "shift":
+                        tokens.add(new BuiltinToken(start, i, new ShiftBuiltin()));
+                        break;
+                    case "unshift":
+                        tokens.add(new BuiltinToken(start, i, new UnshiftBuiltin()));
+                        break;
+                    case "range":
+                        tokens.add(new BuiltinToken(start, i, new RangeBuiltin()));
                         break;
                     default:
                         tokens.add(new NameToken(start, i, value));

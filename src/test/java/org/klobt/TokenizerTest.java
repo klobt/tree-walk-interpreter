@@ -1,7 +1,7 @@
 package org.klobt;
 
 import org.junit.jupiter.api.Test;
-import org.klobt.builtin.PrintBuiltin;
+import org.klobt.builtin.*;
 import org.klobt.operator.*;
 import org.klobt.token.*;
 
@@ -99,8 +99,8 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeMixtureOfOperators() {
-        List<Token> tokens = tokenizer.tokenize("+{}()[]:;.,+");
-        assertEquals(12, tokens.size());
+        List<Token> tokens = tokenizer.tokenize("+{}()[]:;,+");
+        assertEquals(11, tokens.size());
         assertInstanceOf(OperatorToken.class, tokens.get(0));
         assertInstanceOf(LBraceToken.class, tokens.get(1));
         assertInstanceOf(RBraceToken.class, tokens.get(2));
@@ -110,17 +110,30 @@ public class TokenizerTest {
         assertInstanceOf(RBracketToken.class, tokens.get(6));
         assertInstanceOf(ColonToken.class, tokens.get(7));
         assertInstanceOf(SemicolonToken.class, tokens.get(8));
-        assertInstanceOf(PeriodToken.class, tokens.get(9));
-        assertInstanceOf(CommaToken.class, tokens.get(10));
-        assertInstanceOf(OperatorToken.class, tokens.get(11));
+        assertInstanceOf(CommaToken.class, tokens.get(9));
+        assertInstanceOf(OperatorToken.class, tokens.get(10));
     }
 
     @Test
     public void testTokenizeBuiltins() {
-        List<Token> tokens = tokenizer.tokenize("print");
-        assertEquals(1, tokens.size());
-        assertInstanceOf(BuiltinToken.class, tokens.getFirst());
-        assertInstanceOf(PrintBuiltin.class, ((BuiltinToken) tokens.getFirst()).getBuiltin());
+        List<Token> tokens = tokenizer.tokenize("print array length pop push shift unshift range");
+        assertEquals(8, tokens.size());
+        assertInstanceOf(BuiltinToken.class, tokens.get(0));
+        assertInstanceOf(PrintBuiltin.class, ((BuiltinToken) tokens.get(0)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(1));
+        assertInstanceOf(ArrayBuiltin.class, ((BuiltinToken) tokens.get(1)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(2));
+        assertInstanceOf(LengthBuiltin.class, ((BuiltinToken) tokens.get(2)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(3));
+        assertInstanceOf(PopBuiltin.class, ((BuiltinToken) tokens.get(3)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(4));
+        assertInstanceOf(PushBuiltin.class, ((BuiltinToken) tokens.get(4)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(5));
+        assertInstanceOf(ShiftBuiltin.class, ((BuiltinToken) tokens.get(5)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(6));
+        assertInstanceOf(UnshiftBuiltin.class, ((BuiltinToken) tokens.get(6)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(7));
+        assertInstanceOf(RangeBuiltin.class, ((BuiltinToken) tokens.get(7)).getBuiltin());
     }
 
     @Test

@@ -147,4 +147,57 @@ public class ProgramTest {
                 "12.0\r\n"
         );
     }
+
+    @Test
+    public void testArray() {
+        assertProgram(
+                new StringBuilder()
+                        .append("A = array(1, 2, 3);")
+                        .append("print(A[1]);")
+                        .toString(),
+                new NumberValue(0),
+                "2.0\r\n"
+        );
+    }
+
+    @Test
+    public void testArrayShift() {
+        assertProgram(
+                new StringBuilder()
+                        .append("A = array(1, 2, 3);")
+                        .append("shift(A);")
+                        .append("print(A[1]);")
+                        .toString(),
+                new NumberValue(0),
+                "3.0\r\n"
+        );
+    }
+
+    @Test
+    public void testArrayPushPop() {
+        assertProgram(
+                new StringBuilder()
+                        .append("A = array(1, 2, 3);")
+                        .append("print(A[2]);")
+                        .append("pop(A);")
+                        .append("print(length(A));")
+                        .append("push(A, 100);")
+                        .append("print(A[2]);")
+                        .toString(),
+                new NumberValue(0),
+                "3.0\r\n2.0\r\n100.0\r\n"
+        );
+    }
+
+    @Test
+    public void testArrayRange() {
+        assertProgram(
+                new StringBuilder()
+                        .append("r = range(1, 4);")
+                        .append("print(r);")
+                        .toString(),
+                new NumberValue(0),
+                "array(1.0, 2.0, 3.0)\r\n"
+        );
+    }
 }
