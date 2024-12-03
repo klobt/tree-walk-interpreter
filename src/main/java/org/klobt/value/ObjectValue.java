@@ -3,7 +3,6 @@ package org.klobt.value;
 import org.klobt.io.Writer;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class ObjectValue extends Value {

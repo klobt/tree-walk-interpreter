@@ -19,6 +19,7 @@ public class ProgramTest {
         assertEquals(expectedOutput, writer.getString());
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testAssignment() {
         assertProgram(
@@ -31,6 +32,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testAnotherVariable() {
         assertProgram(
@@ -44,6 +46,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testArithmetic() {
         assertProgram(
@@ -56,6 +59,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testIfElse() {
         assertProgram(
@@ -72,6 +76,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testFibonacci() {
         assertProgram(
@@ -90,6 +95,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testBreak() {
         assertProgram(
@@ -106,6 +112,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testContinue() {
         assertProgram(
@@ -122,6 +129,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testFunction() {
         assertProgram(
@@ -134,6 +142,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testFunctionReturn() {
         assertProgram(
@@ -148,6 +157,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testArray() {
         assertProgram(
@@ -160,6 +170,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testArrayShift() {
         assertProgram(
@@ -173,6 +184,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testArrayPushPop() {
         assertProgram(
@@ -189,6 +201,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testArrayRange() {
         assertProgram(
@@ -201,6 +214,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testObject() {
         assertProgram(
@@ -216,6 +230,7 @@ public class ProgramTest {
         );
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     @Test
     public void testObjectMethod() {
         assertProgram(

@@ -190,7 +190,7 @@ public class Parser {
             advance();
             advance();
             defaultValue = expression();
-            
+
             if (defaultValue == null) {
                 error("Expected expression");
             }
@@ -291,50 +291,57 @@ public class Parser {
 
         start = node.getStart();
 
+        label:
         while (!isEOF()) {
-            if (current() instanceof LParenToken) {
-                advance();
+            switch (current()) {
+                case LParenToken lParenToken:
+                    advance();
 
-                ArgumentList<PureNode> arguments = argumentList();
+                    ArgumentList<PureNode> arguments = argumentList();
 
-                expect(RParenToken.class);
-                end = current().getEnd();
-                advance();
+                    expect(RParenToken.class);
+                    end = current().getEnd();
+                    advance();
 
-                node = new CallNode(start, end, node, arguments);
-            } else if (current() instanceof LBracketToken) {
-                advance();
+                    node = new CallNode(start, end, node, arguments);
+                    break;
+                case LBracketToken lBracketToken:
+                    advance();
 
-                PureNode index = expression();
-                if (index == null) {
-                    error("Expected expression");
-                }
+                    PureNode index = expression();
+                    if (index == null) {
+                        error("Expected expression");
+                    }
 
-                expect(RBracketToken.class);
-                end = current().getEnd();
-                advance();
+                    expect(RBracketToken.class);
+                    end = current().getEnd();
+                    advance();
 
-                node = new IndexNode(start, end, node, index);
-            } else if (current() instanceof PeriodToken) {
-                advance();
+                    node = new IndexNode(start, end, node, index);
+                    break;
+                case PeriodToken periodToken:
+                    advance();
 
-                expect(NameToken.class);
-                String memberName = ((NameToken) current()).getValue();
-                end = current().getEnd();
-                advance();
+                    expect(NameToken.class);
+                    String memberName = ((NameToken) current()).getValue();
+                    end = current().getEnd();
+                    advance();
 
-                node = new MemberNode(start, end, node, memberName);
-            } else if (current() instanceof ColonToken) {
-                advance();
+                    node = new MemberNode(start, end, node, memberName);
+                    break;
+                case ColonToken colonToken:
+                    advance();
 
-                expect(NameToken.class);
-                String methodName = ((NameToken) current()).getValue();
-                end = current().getEnd();
-                advance();
+                    expect(NameToken.class);
+                    String methodName = ((NameToken) current()).getValue();
+                    end = current().getEnd();
+                    advance();
 
-                node = new MethodNode(start, end, node, methodName);
-            } else {
-                break;
+                    node = new MethodNode(start, end, node, methodName);
+                    break;
+                case null:
+                default:
+                    break label;
             }
         }
 
