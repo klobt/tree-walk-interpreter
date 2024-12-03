@@ -29,7 +29,7 @@ public class Tokenizer {
     }
 
     private boolean isOperator(char ch) {
-        return "=!%^&*-+<>/".indexOf(ch) >= 0;
+        return "=!%^&*-+<>/.".indexOf(ch) >= 0;
     }
 
     public List<Token> tokenize(String input) {
@@ -242,6 +242,9 @@ public class Tokenizer {
                         break;
                     case "range":
                         tokens.add(new BuiltinToken(start, i, new RangeBuiltin()));
+                        break;
+                    case "object":
+                        tokens.add(new BuiltinToken(start, i, new ObjectBuiltin()));
                         break;
                     default:
                         tokens.add(new NameToken(start, i, value));

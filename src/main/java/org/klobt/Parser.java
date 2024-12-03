@@ -183,6 +183,27 @@ public class Parser {
         return null;
     }
 
+    private void keywordArguments(HashMap<String, PureNode> keywordArguments) {
+        PureNode defaultValue;
+
+        while (!isEOF() && current() instanceof NameToken nameToken && canPeek() && peek() instanceof AssignToken) {
+            advance();
+            advance();
+            defaultValue = expression();
+            
+            if (defaultValue == null) {
+                error("Expected expression");
+            }
+            keywordArguments.put(nameToken.getValue(), defaultValue);
+
+            if (current() instanceof CommaToken) {
+                advance();
+            } else {
+                return;
+            }
+        }
+    }
+
     private ArgumentList<PureNode> argumentList() {
         List<PureNode> positionalArguments = new ArrayList<>();
         HashMap<String, PureNode> keywordArguments = new HashMap<>();
@@ -198,15 +219,7 @@ public class Parser {
             }
         }
 
-        while (!isEOF() && current() instanceof NameToken nameToken && canPeek() && peek() instanceof AssignToken) {
-            advance();
-            advance();
-            argument = expression();
-            if (argument == null) {
-                error("Expected expression");
-            }
-            keywordArguments.put(nameToken.getValue(), argument);
-        }
+        keywordArguments(keywordArguments);
 
         return new ArgumentList<>(positionalArguments, keywordArguments);
     }
@@ -256,7 +269,7 @@ public class Parser {
     private void functionDefinitionArguments(List<String> positionalArguments, HashMap<String, PureNode> keywordArguments) {
         while (!isEOF() && !(current() instanceof NameToken && canPeek() && peek() instanceof AssignToken) && (current() instanceof NameToken name)) {
             advance();
-            
+
             positionalArguments.add(name.getValue());
 
             if (current() instanceof CommaToken) {
@@ -266,17 +279,7 @@ public class Parser {
             }
         }
 
-        PureNode defaultValue;
-
-        while (!isEOF() && current() instanceof NameToken name && canPeek() && peek() instanceof AssignToken) {
-            advance();
-            advance();
-            defaultValue = expression();
-            if (defaultValue == null) {
-                error("Expected expression");
-            }
-            keywordArguments.put(name.getValue(), defaultValue);
-        }
+        keywordArguments(keywordArguments);
     }
 
     private PureNode postfix() {
@@ -312,6 +315,24 @@ public class Parser {
                 advance();
 
                 node = new IndexNode(start, end, node, index);
+            } else if (current() instanceof PeriodToken) {
+                advance();
+
+                expect(NameToken.class);
+                String memberName = ((NameToken) current()).getValue();
+                end = current().getEnd();
+                advance();
+
+                node = new MemberNode(start, end, node, memberName);
+            } else if (current() instanceof ColonToken) {
+                advance();
+
+                expect(NameToken.class);
+                String methodName = ((NameToken) current()).getValue();
+                end = current().getEnd();
+                advance();
+
+                node = new MethodNode(start, end, node, methodName);
             } else {
                 break;
             }

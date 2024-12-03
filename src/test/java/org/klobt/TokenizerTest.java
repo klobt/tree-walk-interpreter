@@ -116,8 +116,8 @@ public class TokenizerTest {
 
     @Test
     public void testTokenizeBuiltins() {
-        List<Token> tokens = tokenizer.tokenize("print array length pop push shift unshift range");
-        assertEquals(8, tokens.size());
+        List<Token> tokens = tokenizer.tokenize("print array length pop push shift unshift range object");
+        assertEquals(9, tokens.size());
         assertInstanceOf(BuiltinToken.class, tokens.get(0));
         assertInstanceOf(PrintBuiltin.class, ((BuiltinToken) tokens.get(0)).getBuiltin());
         assertInstanceOf(BuiltinToken.class, tokens.get(1));
@@ -134,6 +134,8 @@ public class TokenizerTest {
         assertInstanceOf(UnshiftBuiltin.class, ((BuiltinToken) tokens.get(6)).getBuiltin());
         assertInstanceOf(BuiltinToken.class, tokens.get(7));
         assertInstanceOf(RangeBuiltin.class, ((BuiltinToken) tokens.get(7)).getBuiltin());
+        assertInstanceOf(BuiltinToken.class, tokens.get(8));
+        assertInstanceOf(ObjectBuiltin.class, ((BuiltinToken) tokens.get(8)).getBuiltin());
     }
 
     @Test

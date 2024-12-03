@@ -200,4 +200,37 @@ public class ProgramTest {
                 "array(1.0, 2.0, 3.0)\r\n"
         );
     }
+
+    @Test
+    public void testObject() {
+        assertProgram(
+                new StringBuilder()
+                        .append("user = object(")
+                        .append("  name = 'john',")
+                        .append("  password = 'pass123',")
+                        .append(");")
+                        .append("print(user.name);")
+                        .toString(),
+                new NumberValue(0),
+                "john\r\n"
+        );
+    }
+
+    @Test
+    public void testObjectMethod() {
+        assertProgram(
+                new StringBuilder()
+                        .append("user = object(")
+                        .append("  name = 'John',")
+                        .append("  password = 'pass123',")
+                        .append("  greet = function (this) {")
+                        .append("    print('Hello. I\\'m ' .. this.name .. '.');")
+                        .append("  },")
+                        .append(");")
+                        .append("user:greet();")
+                        .toString(),
+                new NumberValue(0),
+                "Hello. I'm John.\r\n"
+        );
+    }
 }
