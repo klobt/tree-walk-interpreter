@@ -228,9 +228,6 @@ public class Tokenizer {
             } else if (input.charAt(i) == ',') {
                 tokens.add(new CommaToken(i, i + 1));
                 i++;
-            } else if (input.charAt(i) == '.') {
-                tokens.add(new PeriodToken(i, i + 1));
-                i++;
             } else if (input.charAt(i) == ';') {
                 tokens.add(new SemicolonToken(i, i + 1));
                 i++;
@@ -315,6 +312,9 @@ public class Tokenizer {
                         break;
                     case "=":
                         tokens.add(new AssignToken(start, i));
+                        break;
+                    case ".":
+                        tokens.add(new PeriodToken(start, i));
                         break;
                     default:
                         throw new Error(input, start, i, "Unknown operator: " + operator);
