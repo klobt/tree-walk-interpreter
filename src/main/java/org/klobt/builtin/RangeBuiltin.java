@@ -5,7 +5,6 @@ import org.klobt.Context;
 import org.klobt.Error;
 import org.klobt.ast.Node;
 import org.klobt.value.ArrayValue;
-import org.klobt.value.NullValue;
 import org.klobt.value.NumberValue;
 import org.klobt.value.Value;
 
