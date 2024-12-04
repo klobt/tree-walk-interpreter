@@ -561,6 +561,34 @@ public class Parser {
             }
 
             return new WhileNode(start, body.getEnd(), condition, body);
+        } else if (current() instanceof ForToken) {
+            int start = current().getStart();
+
+            advance();
+            expect(LParenToken.class);
+            advance();
+
+            expect(NameToken.class);
+            String elementName = ((NameToken) current()).getValue();
+            advance();
+
+            expect(InToken.class);
+            advance();
+
+            PureNode collection = expression();
+            if (collection == null) {
+                error("Expected expression");
+            }
+
+            expect(RParenToken.class);
+            advance();
+
+            Node body = statement();
+            if (body == null) {
+                error("Expected statement");
+            }
+
+            return new ForNode(start, body.getEnd(), elementName, collection, body);
         } else if (current() instanceof BreakToken) {
             int start = current().getStart(), end = current().getEnd();
 

@@ -300,4 +300,18 @@ public class ProgramTest {
                 "2.0\r\n100.0\r\n"
         );
     }
+
+    @SuppressWarnings("StringBufferReplaceableByString")
+    @Test
+    public void testForRange() {
+        assertProgram(
+                new StringBuilder()
+                        .append("for (i in range(0, 4)) {")
+                        .append("  print(i);")
+                        .append("}")
+                        .toString(),
+                new NumberValue(0),
+                "0.0\r\n1.0\r\n2.0\r\n3.0\r\n"
+        );
+    }
 }

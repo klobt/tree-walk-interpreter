@@ -219,6 +219,12 @@ public class Tokenizer {
                     case "return":
                         tokens.add(new ReturnToken(start, i));
                         break;
+                    case "for":
+                        tokens.add(new ForToken(start, i));
+                        break;
+                    case "in":
+                        tokens.add(new InToken(start, i));
+                        break;
                     case "print":
                         tokens.add(new BuiltinToken(start, i, new PrintBuiltin()));
                         break;
