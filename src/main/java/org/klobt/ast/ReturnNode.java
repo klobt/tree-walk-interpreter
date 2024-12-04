@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.Error;
+import org.klobt.control.ContinueException;
 import org.klobt.control.ReturnException;
 import org.klobt.value.Value;
 
@@ -37,6 +39,10 @@ public class ReturnNode extends Node {
 
     @Override
     public Value evaluate(Context context) throws ReturnException {
-        throw new ReturnException(node.evaluate(context));
+        if (context.getFunctionDepth() > 0) {
+            throw new ReturnException(node.evaluate(context));
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Can't call return outside a function");
+        }
     }
 }

@@ -36,6 +36,8 @@ public class ForNode extends Node {
 
     @Override
     public Value evaluate(Context context) throws BreakException, ContinueException, ReturnException {
+        context.startLoop();
+
         Stream<Value> valueStream;
         Value collectionValue = collection.evaluate(context);
 
@@ -60,6 +62,8 @@ public class ForNode extends Node {
                 //
             }
         }
+
+        context.endLoop();
 
         return new NullValue();
     }

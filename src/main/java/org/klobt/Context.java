@@ -12,6 +12,8 @@ public class Context {
     private final String input;
     private final Writer writer;
     private final Stack<HashMap<String, Value>> scopes;
+    private int functionDepth = 0;
+    private int loopDepth = 0;
 
     public Context(String input, Writer writer) {
         this.input = input;
@@ -52,5 +54,29 @@ public class Context {
 
     public void popScope() {
         this.scopes.pop();
+    }
+
+    public void startFunction() {
+        functionDepth++;
+    }
+
+    public void endFunction() {
+        functionDepth--;
+    }
+
+    public void startLoop() {
+        loopDepth++;
+    }
+
+    public void endLoop() {
+        loopDepth--;
+    }
+
+    public int getFunctionDepth() {
+        return functionDepth;
+    }
+
+    public int getLoopDepth() {
+        return loopDepth;
     }
 }

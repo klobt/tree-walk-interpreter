@@ -1,6 +1,8 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.Error;
+import org.klobt.control.BreakException;
 import org.klobt.control.ContinueException;
 import org.klobt.value.Value;
 
@@ -25,6 +27,10 @@ public class ContinueNode extends Node {
 
     @Override
     public Value evaluate(Context context) throws ContinueException {
-        throw new ContinueException();
+        if (context.getLoopDepth() > 0) {
+            throw new ContinueException();
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Can't call continue outside a loop");
+        }
     }
 }

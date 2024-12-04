@@ -39,6 +39,8 @@ public class WhileNode extends Node {
 
     @Override
     public Value evaluate(Context context) throws BreakException, ContinueException, ReturnException {
+        context.startLoop();
+
         if (condition.evaluate(context) instanceof BooleanValue conditionValue) {
             if (conditionValue.getValue()) {
                 while (true) {
@@ -62,6 +64,8 @@ public class WhileNode extends Node {
         } else {
             throw new Error(context.getInput(), getStart(), getEnd(), "Expected a boolean value inside the condition");
         }
+
+        context.endLoop();
 
         return new NullValue();
     }

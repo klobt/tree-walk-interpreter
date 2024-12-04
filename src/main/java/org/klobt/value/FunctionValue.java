@@ -52,6 +52,7 @@ public class FunctionValue extends Value implements Callable {
 
     @Override
     public Value call(Context context, Node node, ArgumentList<Value> arguments) {
+        context.startFunction();
         context.pushScope();
 
         for (int i = 0; i < positionalArguments.size(); i++) {
@@ -84,6 +85,7 @@ public class FunctionValue extends Value implements Callable {
         }
 
         context.popScope();
+        context.endFunction();
 
         return returnValue;
     }

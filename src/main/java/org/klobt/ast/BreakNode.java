@@ -1,6 +1,7 @@
 package org.klobt.ast;
 
 import org.klobt.Context;
+import org.klobt.Error;
 import org.klobt.control.BreakException;
 import org.klobt.value.Value;
 
@@ -25,6 +26,10 @@ public class BreakNode extends Node {
 
     @Override
     public Value evaluate(Context context) throws BreakException {
-        throw new BreakException();
+        if (context.getLoopDepth() > 0) {
+            throw new BreakException();
+        } else {
+            throw new Error(context.getInput(), getStart(), getEnd(), "Can't call break outside a loop");
+        }
     }
 }
