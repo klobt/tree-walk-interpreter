@@ -42,9 +42,10 @@ public class MethodValue extends Value implements Callable {
     public Value call(Context context, Node node, ArgumentList<Value> arguments) {
         List<Value> positionalArguments = new ArrayList<>();
 
-        Collections.copy(positionalArguments, arguments.getPositionalArguments());
+        positionalArguments.add(object);
 
-        positionalArguments.addFirst(object);
+        positionalArguments.addAll(arguments.getPositionalArguments());
+
 
         return function.call(context, node, new ArgumentList<>(positionalArguments, arguments.getKeywordArguments()));
     }

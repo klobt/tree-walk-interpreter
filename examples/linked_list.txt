@@ -1,0 +1,93 @@
+newNode = function (value) {
+    return object(
+        value = value,
+        next = null,
+    );
+};
+
+newList = function () {
+    return object(
+        head = null,
+        isEmpty = function (this) this.head == null,
+        append = function (this, value) {
+            node = newNode(value);
+            if (this:isEmpty()) {
+                this.head = node;
+            } else {
+                current = this.head;
+                while (current.next != null) {
+                    current = current.next;
+                }
+                current.next = node;
+            }
+        },
+        prepend = function (this, value) {
+            node = newNode(value);
+            node.next = this.head;
+            this.head = node;
+        },
+        delete = function (this, value) {
+            if (this:isEmpty()) {
+                return;
+            }
+
+            if (this.head.value == value) {
+                this.head = this.head.next;
+                return;
+            }
+
+            current = this.head;
+            while (current.next != null && current.next.value != value) {
+                current = current.next;
+            }
+
+            if (current.next != null) {
+                current.next = current.next.next;
+            }
+        },
+        display = function (this) {
+            if (this:isEmpty()) {
+                print("Empty list");
+            } else {
+                current = this.head;
+                while (current != null) {
+                    print(current.value, end=" -> ");
+                    current = current.next;
+                }
+                print("null");
+            }
+        },
+        search = function (this, value) {
+            current = this.head;
+            while (current != null) {
+                if (current.value == value) {
+                    return true;
+                }
+                current = current.next;
+            }
+            return false;
+        },
+        size = function (this) {
+            count = 0;
+            current = this.head;
+            while (current != null) {
+                count = count + 1;
+                current = current.next;
+            }
+            return count;
+        },
+    );
+};
+
+list = newList();
+list:append(10);
+list:append(20);
+list:append(30);
+list:display();
+list:prepend(5);
+list:display();
+list:delete(20);
+list:display();
+print(list:size());
+print(list:search(10));
+print(list:search(100));
