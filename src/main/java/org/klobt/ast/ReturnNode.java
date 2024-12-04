@@ -2,7 +2,6 @@ package org.klobt.ast;
 
 import org.klobt.Context;
 import org.klobt.Error;
-import org.klobt.control.ContinueException;
 import org.klobt.control.ReturnException;
 import org.klobt.value.Value;
 

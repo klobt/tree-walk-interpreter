@@ -5,7 +5,6 @@ import org.klobt.value.NullValue;
 import org.klobt.value.Value;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Stack;
 
 public class Context {

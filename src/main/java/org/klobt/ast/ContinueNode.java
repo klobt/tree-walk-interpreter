@@ -2,7 +2,6 @@ package org.klobt.ast;
 
 import org.klobt.Context;
 import org.klobt.Error;
-import org.klobt.control.BreakException;
 import org.klobt.control.ContinueException;
 import org.klobt.value.Value;
 
@@ -18,11 +17,7 @@ public class ContinueNode extends Node {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        return true;
+        return o != null && getClass() == o.getClass();
     }
 
     @Override
