@@ -10,8 +10,6 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         String input = "";
@@ -49,12 +47,14 @@ public class Main {
     }
 
     private static String getInputFromStdin() {
-        // Courtesy of https://stackoverflow.com/a/61369438
+        // Courtesy of https://stackoverflow.com/a/61369438 (modified)
         StringBuilder sb = new StringBuilder();
         final Scanner scanner = new Scanner(System.in);
-        for (String line = scanner.nextLine(); !line.isEmpty(); line = scanner.nextLine()) {
-            sb.append(line).append(System.lineSeparator());
+
+        while (scanner.hasNextLine()) {
+            sb.append(scanner.nextLine()).append(System.lineSeparator());
         }
+
         return sb.toString();
     }
 }

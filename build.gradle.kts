@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    java
 }
 
 group = "org.klobt"
@@ -15,6 +15,28 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
-tasks.test {
-    useJUnitPlatform()
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs = listOf("--enable-preview")
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs = listOf("--enable-preview")
+}
+
+tasks.jar {
+    archiveBaseName.set("tree-walk-interpreter")
+    archiveVersion.set("0.1")
+    manifest {
+        attributes["Main-Class"] = "org.klobt.Main"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
